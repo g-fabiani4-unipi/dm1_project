@@ -1,6 +1,6 @@
 # Repository for Data Mining Fundamentals project
 ## Directories
-- `data`: raw data (at the moment the training and test sets for the task);
+- `data`: raw data;
 - `src`: the project source code (jupyter notebooks, scripts etc.);
 - `results`: intermediate data generated during cleanup and analysis as well as final results such as figures and tables;
 - `doc`: documents associated with the project report.
