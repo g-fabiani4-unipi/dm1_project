@@ -7,7 +7,7 @@ For each experiment, we followed the same steps:
     \item Scaling the dataset: we used min-max normalization, since it lead to better Silhouette scores in comparison to StandardScaler and RobustScaler.
     \item Selecting the best value for \textit{k} (except for X-Means): we used both the Elbow method and the Silhouette method as heuristics to determine the appropriate number of clusters. To do so, we iteratively run the algorithm for \textit{k} in the range [2,50], plotting the SSE and Silhouette score for each \textit{k} and comparing the two curves to find the best trade-off. An example is reported in Figure \ref{fig:elbow_kmeans1.png}.
     \item Fitting the algorithm and evaluating the resulting clustering in terms of cohesion and separation by calculating the SSE, Silhouette score, and correlation between the distance matrix of the dataset and the ideal similarity matrix.
-    \item Visual cluster exploration: cluster visualization through PCA, parallel coordinates plot of the centroids, and silhouette plots for each cluster.
+    \item Visual cluster exploration: cluster visualization through PCA (and t-SNE for selected experiments), parallel coordinates plot of the centroids, and silhouette plots for each cluster.
 \end{enumerate}
 
 \subsubsection{K-Means}
