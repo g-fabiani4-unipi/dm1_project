@@ -1,56 +1,38 @@
 \subsection{Centroid-based Clustering}
 \label{centroid_clustering}
-In analyzing the dataset using centroid-based methods, we experimented with three different algorithms: K-Means, Bisecting K-Means, and X-Means.
+In analyzing the dataset using centroid-based methods, we experimented with two different algorithms, K-Means and Bisecting K-Means.
 For each experiment, we followed the same steps:
 \begin{enumerate}
-    \item Choosing the attributes: we experimented by using both all numeric features (vide Table \ref{tab:dataset_numeric}), log-transformed if necessary as detailed in Subsection \ref{numeric_vars_analysis}, and then by only using a selection of them. In fact, in light of our findings in Subsection \ref{var_correlation_elimination}, we dropped \textit{totalImages}, \textit{numRegions} and \textit{totalCredits}, since they are all moderately correlated with \textit{numVotes}. Using this selection of features has yielded better performances.
-    \item Scaling the dataset: we used min-max normalization, since it lead to better Silhouette scores in comparison to StandardScaler and RobustScaler.
-    \item Selecting the best value for \textit{k} (except for X-Means): we used both the Elbow method and the Silhouette method as heuristics to determine the appropriate number of clusters. To do so, we iteratively run the algorithm for \textit{k} in the range [2,50], plotting the SSE and Silhouette score for each \textit{k} and comparing the two curves to find the best trade-off. An example is reported in Figure \ref{fig:elbow_kmeans1.png}.
+    \item Choosing the attributes and scaling the dataset: we used all numeric features (cf. Table \ref{tab:dataset_numeric}), log-transformed if necessary as detailed in Subsec. \ref{numeric_vars_analysis}, and scaled the values using StandardScaler. %TO JUSTIFY STANDARDSCALER IN THE SUBSECTION INTRO, SINCE WE USED IT FOR ALL ALGORITHMS.
+    \item Selecting the best value for \textit{k}: we used both the Elbow method and the Silhouette method as heuristics to determine the appropriate number of clusters. To do so, we iteratively run the algorithm for \textit{k} in the range [2,50], plotting the SSE and Silhouette score for each \textit{k} and comparing the two curves to find the best trade-off.
     \item Fitting the algorithm and evaluating the resulting clustering in terms of cohesion and separation by calculating the SSE, Silhouette score, and correlation between the distance matrix of the dataset and the ideal similarity matrix.
-    \item Visual cluster exploration: cluster visualization through PCA (and t-SNE for selected experiments), parallel coordinates plot of the centroids, and silhouette plots for each cluster.
+    \item Visual cluster exploration: cluster visualization through PCA, t-SNE, and a parallel coordinates plot of the centroids, followed by a further visualization of the clusters' composition w.r.t. categorical and numeric features.
 \end{enumerate}
 
 \subsubsection{K-Means}
-For the first experiment using all numeric features, we select k=8 as a trade-off between SSE and Silhouette score, by analyzing the plots in Figure \ref{fig:elbow_kmeans1.png}.
-The resulting SSE and Silhouette score are 1843.054 and 0.333, respectively, while the correlation is -0.616.
+We select k=7 as a trade-off between SSE and Silhouette score.
+The resulting SSE and Silhouette score are 62588.082 and 0.189, respectively, while the correlation is -0.458. Though the SSE value might seem high, it is significantly lower than the SSE of 500 randomly generated datasets (cf. Figure \ref{fig:SSE_eval_kmeans.png}), which suggests that our clustering is meaningful and not a product of chance.
+
+%\begin{figure}
+%    \includegraphics[width=\columnwidth]{../results/images/elbow_kmeans.png}
+%    \caption{SSE and Silhouette score for choosing \textit{k} (K-Means)}
+%    \label{fig:elbow_kmeans.png}
+%\end{figure}
 
 \begin{figure}
-    \includegraphics[width=\columnwidth]{../results/images/elbow_kmeans1.png}
-    \caption{SSE and Silhouette score for choosing \textit{k} (K-Means, all feats.)}
-    \label{fig:elbow_kmeans1.png}
+    \includegraphics[width=\columnwidth]{../results/images/SSE_eval_kmeans.png}
+    \caption{Statistical framework for clusters' validity: see (K-Means).}
+    \label{fig:SSE_eval_kmeans.png}
 \end{figure}
 
-The clusters' composition is reported in Table \ref{tab:clusters_kmeans1}: in terms of population, we can distinguish Cluster 2 as the largest cluster, and then three groups, with Clusters 5, 6 and 7 having slightly less than 1000 records, Clusters 0 and 3 having less than 1500, and Clusters 1 and 4 having between 3000 and 3500 records.
-The first thing that emerges from the PCA visualization and the parallel coordinates graph is that the clusters separate points mostly based on \textit{numGenres} (which only has three discrete values, 1, 2, or 3). \textit{criticReviewsRatio} also leads to interesting centroid separation. Cluster 7 is characterized by a significantly lower value for \textit{startYear}, meaning that it clusters older titles; its centroid is also separated by a lower value for \textit{totalCredits} and \textit{logRuntime}, though not as dramatically.
+The clusters' composition is reported in Table \ref{tab:clusters_kmeans}: in terms of population, we can distinguish Cluster 0 as the largest cluster, with almost 5000 records, followed by Cluster 2 with over 3000 records. The smallest cluster is Cluster 6, with only 950 records. The remaining clusters have between 1400 and 2000 records.
 
-
-For the second experiment, using the selection of features, we also select k=8. All evaluation metrics improve: the resulting SSE is 989.711, the Silhouette score is 0.444, and the correlation is -0.656. Figure \ref{fig:SSE_eval_kmeans2.png} shows that our clustering's SSE is significantly lower than the SSE found in the clustering of 500 randomly generated datasets, which suggests that the clusters found by the algorithm in our dataset are meaningful and not a product of chance.
-\begin{figure}
-    \includegraphics[width=\columnwidth]{../results/images/SSE_eval_kmeans2.png}
-    \caption{Statistical SSE evaluation for K-Means (k=8, selected feats.)}
-    \label{fig:SSE_eval_kmeans2.png}
-\end{figure}
-
-
-The clusters' composition, reported in Table \ref{tab:clusters_kmeans2}, shows once again a significantly larger cluster, Cluster 6, with 5115 records, followed by Cluster 7 and 0, having over 3000 records each. The remaining clusters have between 853 and 1076 records. Looking at the silhouette plots in Figure \ref{fig:silhouette_kmeans2.png}, we can say that Clusters 6, 7, and 0 are particularly well-separated, with a significant portion of their data points extending beyond the average Silhouette score, whereas Clusters 1, 2 and 3 seem to be less well-defined. 
-\begin{figure}
-    \includegraphics[width=\columnwidth]{../results/images/silhouette_kmeans2.png}
-    \caption{Silhouette visualizer and Scatterplot for the most significant feats(K-Means, k=8, selected feats.)}
-    \label{fig:silhouette_kmeans2.png}
-\end{figure}
-
-Again, the PCA visualization and the parallel coordinates graph (Figure \ref{fig:PCA_kmeans2.png} and \ref{fig:centroids_kmeans2.png}) show that the most relevant feature for clusters' separation is \textit{numGenres}, followed by \textit{criticReviewsRatio} (especially for Clusters 5 and 4). This time, Cluster 2's centroid is particularly separated due to its low value for \textit{startYear}, and, again, is also characterized by a lower value for \textit{logRuntime}. 
+The first thing that emerges from the parallel coordinates graph (Figure \ref{fig:centroids_kmeans.png}) is how Cluster 3 is well-separated from the others w.r.t half of the features: it has a particularly high value for \textit{numVotes}, \textit{totalImages}, \textit{totalCredits}, and \textit{numRegions}  – variables for which we had observed moderate correlation in Subsec. \ref{var_correlation_elimination} . Cluster 5 has a significantly higher value for \textit{criticReviewsRatio}: the algorithm might have isolated titles with greater critical appeal. Clusters 6 and 4 have the lowest runtime by far; Cluster 6, the smallest one, is also characterized by a low value for \textit{startYear} and \textit{totalCredits}: it probably contains the oldest and shortest titles. Clusters 0 and 2 appear to be the least-well separated from the others; they are indeed the biggest clusters. 
 
 \begin{figure}
-    \includegraphics[width=\columnwidth]{../results/images/PCA_kmeans2.png}
-    \caption{PCA visualization for K-Means (k=8, selected feats.)}
-    \label{fig:PCA_kmeans2.png}
-\end{figure}
-
-\begin{figure}
-    \includegraphics[width=\columnwidth]{../results/images/centroids_kmeans2.png}
-    \caption{Centroids' visualization for K-Means (k=8, selected feats.)}
-    \label{fig:centroids_kmeans2.png}
+    \includegraphics[width=\columnwidth]{../results/images/centroids_kmeans.png}
+    \caption{Centroids' visualization for K-Means.}
+    \label{fig:centroids_kmeans.png}
 \end{figure}
 
 \begin{table}[h]
@@ -61,172 +43,94 @@ Again, the PCA visualization and the parallel coordinates graph (Figure \ref{fig
         \begin{tabular}{|c|c|}
             \hline
             \textbf{Cluster} & \textbf{\# of records} \\ \hline
-            0 & 1273 \\ \hline
-            1 & 3105 \\ \hline
-            2 & 4511 \\ \hline
-            3 & 1453 \\ \hline
-            4 & 3477 \\ \hline
-            5 & 839 \\ \hline
-            6 & 909 \\ \hline
-            7 & 864 \\ \hline
+            0 & 4841 \\ \hline
+            1 & 1985 \\ \hline
+            2 & 3424 \\ \hline
+            3 & 1424 \\ \hline
+            4 & 1985 \\ \hline
+            5 & 1822 \\ \hline
+            6 & 950 \\ \hline
         \end{tabular}
-        \caption{Clusters for K-Means (k=8, all features).}
-        \label{tab:clusters_kmeans1}
+        \caption{Clusters for K-Means.}
+        \label{tab:clusters_kmeans}
     \end{minipage}
     \hfill
     \begin{minipage}{0.45\linewidth}
         \centering
+        \small
         \begin{tabular}{|c|c|}
             \hline
             \textbf{Cluster} & \textbf{\# of records} \\ \hline
-            0 & 3020 \\ \hline
-            1 & 865 \\ \hline
-            2 & 853 \\ \hline
-            3 & 1360 \\ \hline
-            4 & 1076 \\ \hline
-            5 & 935 \\ \hline
-            6 & 5115 \\ \hline
-            7 & 3207 \\ \hline
+            0 & 1881 \\ \hline
+            1 & 1398 \\ \hline
+            2 & 1397 \\ \hline
+            3 & 1712 \\ \hline
+            4 & 3595 \\ \hline
+            5 & 4184 \\ \hline
+            6 & 2264 \\ \hline
         \end{tabular}
-        \caption{Clusters for K-Means (k=8, selected feats).}
-        \label{tab:clusters_kmeans2}
+        \caption{Clusters for BK-Means.}
+        \label{tab:clusters_bkmeans}
     \end{minipage}
 \end{table}
+
+In order to evaluate the results, we first used stratified bar charts to visualize the distribution of the clusters against known categorical features.
+\begin{itemize}
+    \item \textit{titleType} (cf. the heatmap in Figure \ref{fig:heatmap_titleType_kmeans.png}): the smallest cluster, Cluster 6, is the purest, being mainly made up of shorts. Nevertheless, it's Cluster 4 that contains the largest number of shorts (as well as some tvEpisodes). It also stands out for having the fewest movies – a class otherwise well represented across all other clusters. Cluster 2 has a very large proportion of tvEpisode, which explains its centroid's medium-low position for runtime in the parallel coordinates plot. The importance of \textit{logRuntime} for explaining this clustering is also highlighted by the fact that the few tvShorts present have been almost entirely distributed amongst these three clusters. Cluster 0, the biggest, contains a great number of almost all title types.
+    \item Boolean variables: for almost all clusters, the True records represent a small proportion, except for Cluster 3: around half of its records are True for \textit{hasVideos} and \textit{awardsAndNominations}. Given the insights from the parallel coordinates plot, we can assume this cluster contains mainstream, popular content: it has relatively more videos, images, and votes on its page and was distributed in more countries, but it doesn't have the highest ratio of critical reviews. Cluster 6, on the other hand, has little to no True values for these variables. The highest proportion of True values for \textit{canHaveEpisodes} is in Cluster 0, which contains the largest amount of tvSeries and tvMiniSeries.
+\end{itemize}
+
+\begin{figure}
+    \includegraphics[width=\columnwidth]{../results/images/heatmap_titleType_kmeans.png}
+    \caption{Heatmap Clusters vs titleType for K-Means.}
+    \label{fig:heatmap_titleType_kmeans.png}
+\end{figure}
+
+We also analyzed the clusters' composition w.r.t. the numeric variables used by the algorithm, expanding the insights gained from the parallel coordinates plot.
+Interestingly, the two purest clusters w.r.t to \textit{numGenres} are the biggest: Cluster 0 mostly has one genre, with a minority of two genres, while Cluster 2 mostly has three genres, with a small proportion of two genres. The other clusters are more heterogeneous, having all three possible values. 
+The line graph in Figure \ref{fig:startYear_kmeans.png} shows the distribution of the clusters w.r.t. \textit{startYear}: as hinted by its centroid, Cluster 6 contains the majority of records released before 1930s, and has no record released after 1983. On the other hand, Cluster 4 only has records released since 1963: the algorithm has therefore grouped older shorts in a cluster and newer shorts in another. Cluster 1, which also had a relatively low centroid, mostly contains records from the 1930s until the 1990s.
+Boxplots for the remaining variables also confirm the insights that were previously discussed. For \textit{runtimeMinutes}, Clusters 4 and 6 have the lowest median, at 12 minutes, as well as a short box, indicating low variability. Cluster 4 follows at 40 minutes, coherently with the lenght of a tvEpisode.
+\begin{figure}
+    \includegraphics[width=\columnwidth]{../results/images/startYear_kmeans.png}
+    \caption{Number of titles by year for relevant clusters for K-Means.}
+    \label{fig:startYear_kmeans.png}
+\end{figure}
 
 \subsubsection{Bisecting K-Means}
-For the first experiment, using all numeric features, we select k=6, even though the elbow for the SSE is k=12, because after that peak the Silhouette score drops significantly. The evaluation metrics are overall disappointing: the SSE is 2142.045, the Silhouette score is 0.337, and the correlation is -0.634.
-
-The cluster's composition is summarized in Table \ref{tab:clusters_bkmeans1}: Cluster 3 is the most populated cluster with over 5000 records, followed by Cluster 0 and 4 having both more than 3600, whereas the remaining clusters have between 1197 and 1435 titles. Similarly to before, the clusters' centroids are mainly separated w.r.t. \textit{numGenres} and \textit{criticReviewsRatio}; Cluster 2 distinguishes itself with particularly high values for \textit{numVotes}, \textit{totalImages}, \textit{totalCredits} and \textit{numRegions}.
-
-
-The experiment using fewer features, for which we selected k=6, yields better results, with a SSE equal to 1245.326, a Silhouette score equal to 0.436, and the best correlation among all experiments (-0.672). We have two larger clusters, 0 and 5, while the smallest has 995 features (Table \ref{tab:clusters_bkmeans2}). Once again, the centroids separate mainly based on \textit{numGenres} and \textit{criticReviewsRatio}; Cluster 3 has a particularly high value for \textit{numVotes} w.r.t. the others. 
-
-\begin{table}[h]
-    \centering
-    \small
-    \begin{minipage}{0.45\linewidth}
-        \centering
-        \begin{tabular}{|c|c|}
-            \hline
-            \textbf{Cluster} & \textbf{\# of records} \\ \hline
-            0 & 3616 \\ \hline
-            1 & 1435 \\ \hline
-            2 & 1318 \\ \hline
-            3 & 5116 \\ \hline
-            4 & 1197 \\ \hline
-            5 & 3749 \\ \hline
-        \end{tabular}
-        \caption{Clusters for Bisecting K-Means (k=6, all features).}
-        \label{tab:clusters_bkmeans1}
-    \end{minipage}
-    \hfill
-    \begin{minipage}{0.45\linewidth}
-        \centering
-        \begin{tabular}{|c|c|}
-            \hline
-            \textbf{Cluster} & \textbf{\# of records} \\ \hline
-            0 & 5225 \\ \hline
-            1 & 1088 \\ \hline
-            2 & 995 \\ \hline
-            3 & 1447 \\ \hline
-            4 & 3654 \\ \hline
-            5 & 4022 \\ \hline
-        \end{tabular}
-        \caption{Clusters for Bisecting K-Means (k=6, selected feats).}
-        \label{tab:clusters_bkmeans2}
-    \end{minipage}
-\end{table}
-
-\subsubsection{X-Means}
-Since using fewer features has yielded better results thus far, we employed the selected subset of numerical features. In the first experiment, we did not set a limit to the execution of the algorithm; the result was a clustering with 20 clusters, which of course led to a lower SSE (534.554), but a less satisfactory Silhouette score (0.313) and the lowest correlation observed among the experiments (-0.477). Since 20 clusters are difficult to analyze, in the following experiments we set k=8 and k=6. We report the results for k=8, which has yielded overall satisfactory results in comparison to most of the experiments, with a SSE equal to 1032.925, a Silhouette score of 0.436, and a correlation of -0.652. The cluster's composition (Table \ref{tab:clusters_xmeans}) echoes the ones seen for the previous algorithms, with one larger cluster, a couple of medium-large clusters, and four clusters ranging from 681 to 957 records. The clusters' centroids are, once again, mostly separated based on \textit{numGenres} and \textit{criticReviewsRatio}.
-
-\begin{table}[h]
-    \centering
-    \small
-    \begin{tabular}{|c|c|}
-    \hline
-    \textbf{Cluster} & \textbf{\# of records} \\ \hline
-    0 & 930 \\ \hline
-    1 & 957 \\ \hline
-    2 & 3199 \\ \hline
-    3 & 1356 \\ \hline
-    4 & 3676 \\ \hline
-    5 & 4852 \\ \hline
-    6 & 681 \\ \hline
-    7 & 780 \\ \hline
-    \end{tabular}
-    \caption{Cluster sizes for X-Means with k=8, selected feats.}
-    \label{tab:clusters_xmeans}
-\end{table}
-
-\subsubsection{Discussion and Further Evaluation of the Best Centroid-based Clustering}
-The performances for the different experiments are summarized in Table \ref{tab:cluster_results}. The overall best results were achieved using K-Means with k=8, using a selection of features (Experiment 2): it resulted in the best SSE and Silhouette Score, as well as the second highest negative correlation.
-
-\begin{table}[h]
-    \centering
-    \small
-    \setlength{\tabcolsep}{3.5pt}  % Reduce column spacing
-    \begin{tabular}{|c|l|r|r|r|r|}
-    \hline
-    \textbf{Exp.} & \textbf{Algorithm} & \textbf{Feats} & \textbf{SSE} & \textbf{Silh.} & \textbf{Corr.} \\ \hline
-    1 & K-M (k=8) & All & 1843,054 & 0,333 & -0,616 \\ \hline
-    \textbf{2} & \textbf{K-M (k=8)} & \textbf{Selected} & \textbf{989,711} & \textbf{0,444} & \textbf{-0,656} \\ \hline
-    3 & B.K-M (k=6) & All & 2142,045 & 0,337 & -0,634 \\ \hline
-    4 & B.K-M (k=6) & Selected & 1245,326 & 0,436 & -0,672 \\ \hline
-    5 & X-M (k=20) & Selected & 534,554 & 0,313 & -0,477 \\ \hline
-    6 & X-M (k=8) & Selected & 1032,925 & 0,436 & -0,652 \\ \hline
-    \end{tabular}
-    \caption{Centroid-based clustering analysis results.}
-    \label{tab:cluster_results}
-\end{table}
-
-In order to evaluate the results, we first visualized the distribution of the clusters against known categorical features (those in Table \ref{tab:dataset_categorical}, except for \textit{originalTitle} because of its uninformativeness, and \textit{rating} because it is redundant w.r.t. \textit{ratingNum}) by plotting the clusters with a stratified bar chart against each feature. The distribution doesn't show pure clusters against any of them, but there are some small insights:
-\begin{itemize}
-    \item \textit{titleType}: Clusters 0, 2 and 7 show a relevant proportion of shorts. Cluster 0 and especially Cluster 7 additionally have a relevant proportion of tvEpisodes.  Clusters 3 and 5 also show a relevant portion of tvEpisodes, but not of shorts. Clusters 4 and 1 are made up by more than 50\% movies; their centroids indeed have the highest values for \textit{logRuntime}.
-    \item \textit{ratingNum}: all clusters follow a normal distribution w.r.t. to the rating.
-    \item \textit{canHaveEpisodes}: most of the True records are in the biggest cluster, Cluster 6. For every cluster, they represent a small proportion (especially for 2 and 5).
-    \item \textit{moreCountriesOfOrigin}: not very informative, True represent a small portion for every cluster, but this is especially true for Cluster 2, which is almost entirely False.
-    \item \textit{awardsAndNominations}: Cluster 2 is characterized by being almost entirely made of records with no awards nor nominations.
-    \item \textit{hasVideos}: Cluster 2 is entirely False, whereas Cluster 3 has the most number of True out of any other cluster, showing a significantly higher proportion.
-\end{itemize}
-A clear characterization emerges for Cluster 2: it mostly contains shorts (its centroid has the lowest value for \textit{logRuntime}), and it has very little to no True values for every boolean variable.
-Since it's greatly made up of shorts, then movies and tvEpisodes, we can expect its very low number of True for \textit{canHaveEpisodes}. Its titles are produced in just one country, they have mostly no awards nor nominations (we could expect movies and TV series to gain more accolades) and also almost no video content on their page (again, this could reasonably be a feature for blockbusters and mainstream TV series).
-
-Subsequently, we investigated the clusters' composition w.r.t. numeric variables, first using a pair plot to gain a global view (which confirmed that the clusters are mainly separated on the basis of \textit{numGenres}) and then using appropriate plots to investigate single variables.
-The stratified barchart in Figure \ref{fig:numGenres_kmeans2.png} shows how most clusters are pure w.r.t. \textit{numGenres}: 0 and 1 only have 2 genres, 3 and 7 only have 3 genres, while 4 and 6 only have 1 genre. There remains Cluster 2, which mostly has 2 genres with a small proportion of 1 genre, and Cluster 5, with around 60\% 3 genres and 40\% 2 genres. 
-\begin{figure}
-    \includegraphics[width=\columnwidth]{../results/images/numGenres_kmeans2.png}
-    \caption{Stratified barchart for \textit{numGenres}.}
-    \label{fig:numGenres_kmeans2.png}
-\end{figure}
-
-The box plot in Figure \ref{fig:criticReviewsRatio_kmeans2.png} shows the cluster's distribution w.r.t \textit{criticReviewsRatio}:
-\begin{itemize}
-    \item Cluster 5 is concentrated at 1.0: the reviews are mostly by critics.
-    \item Cluster 4 also has a high ratio (median at around 82\%, most of the records go from 50\% to 100\%).
-    \item Clusters 1 and 3 show variability, but they are a mostly balanced mix of critic and user reviews. They could represent mainstream content.
-    \item Clusters 0, 2, 6 and 7 are skewed towards 0: their reviews are mostly made by the public. They could represent niche or user driven content (indie or fan-made media).
-\end{itemize}
+We select k=7, the only significant local peak in the Silhouette plot (Figure \ref{fig:elbow_bkmeans.png}). All evaluation metrics are worse than the ones for K-Means, with a SSE equal to 67857.023, a Silhouette score equal to 0.128, and a correlation of -0.393. Again, we compared the SSE with the one of 500 randomly generated datasets to confirm its meaningfulness.
+The clusters' sizes are more homogeous than K-Means' (cf. Table \ref{tab:clusters_bkmeans}): Cluster 5 is the biggest with around 4000 records, followed by Cluster 4 with almost 3600 records. All other clusters range between around 1400 and 2300 records.
 
 \begin{figure}
-    \includegraphics[width=\columnwidth]{../results/images/criticReviewsRatio_kmeans2.png}
-    \caption{Box plots for \textit{criticReviewsRatio}.}
-    \label{fig:criticReviewsRatio_kmeans2.png}
+    \includegraphics[width=\columnwidth]{../results/images/elbow_bkmeans.png}
+    \caption{SSE and Silhouette score for choosing \textit{k} (BK-Means).}
+    \label{fig:elbow_bkmeans.png}
 \end{figure}
 
-The cluster's line-graphs for \textit{startYear} (Figure \ref{fig:startYear_kmeans2.png}) confirm that Cluster 2 is characterized by only grouping titles released between 1880 and 1968. On the other hand, Cluster 0 groups newer titles, released since 1963. Clusters 1 and 6 contain no titles released before the 1920s.
-
+Analyzing the parallel coordinates plot in Figure \ref{fig:centroids_bkmeans.png}, we can see that similarly to before, there's a cluster, Cluster 2, that is well-separated from the others w.r.t. \textit{numvotes}, \textit{totalImages}, \textit{totalCredits} and \textit{numRegions}. In terms of these values, it is followed by Clusters 0 and 1. Moreover, there's once again a cluster, Cluster 1, with a particularly high value for \textit{criticReviewsRatio}.
+Differently from K-Means, there is one single cluster, Cluster 3, with a significantly lower value for both \textit{logRuntime} and \textit{totalCredits}. It also has the lowest value for \textit{startYear}, together with Cluster 6. Differently from before, it seems that the algorithm has created a single cluster for shorts, that probably contains also newer titles. Cluster 4 also has a relatively low value for \textit{logRuntime}; we expect it to contain tvEpisodes and the remaining shorts.
 \begin{figure}
-    \includegraphics[width=\columnwidth]{../results/images/startYear_kmeans2.png}
-    \caption{Titles by startYear for relevant clusters.}
-    \label{fig:startYear_kmeans2.png}
+    \includegraphics[width=\columnwidth]{../results/images/centroids_bkmeans.png}
+    \caption{Centroids' visualization for BK-Means.}
+    \label{fig:centroids_bkmeans.png}
 \end{figure}
 
-The box plots for \textit{runtimeMinutes} give the following insights:
+Like for K-Means, we visualized the distribution of the clusters against known categorical features. We find many similarities with the previous algorithm, but also some differences:
 \begin{itemize}
-    \item All IQRs span from around 15 to 100 minutes.
-    \item Cluster 2 has the lowest median runtime (which is coherent with what we've already discussed), followed by Clusters 0, 5 and 7, which have a median at around 40 minutes – they did in fact contain a large portion of shorts and TV episodes. Cluster 3, with a median of 75 minutes, has been characterized as probably containing mainstream content (balanced \textit{criticReviewsRatio,}, highest number oh \textit{hasVideos}): it has a mostly balanced mix of TV episodes and movies.
-    \item Clusters 1 and 4 have a small IQR and a median around 90 minutes, which relates to their records being mostly movies.
-    \item Cluster 6 has outliers that go to over 1000 minutes; it seems that the largest group is also the most heterogeneous. It can be linked to its significant portion of TV series, the runtime of which has been variably identified as the total runtime of the series, or the runtime per episode.    
+    \item \textit{titleType} (cf. Figure \ref{fig:heatmap_titleType_bkmeans.png}): again, the distribution of shorts is what becomes immediately evident. Around half of them are to be found in Cluster 3, which also has a small proportion of tvEpisodes and is the only cluster with almost no movies. Cluster 4, the 2nd biggest cluster, is mostly made of tvEpisodes and a smaller, yet significant, proportion of shorts. The few tvShort recorded are also distributed among these two clusters. It's also worth noting that Cluster 6 contains the biggest number of movies, although being only the 3rd most popular, and that Cluster 2 is the only cluster with almost no tvEpisodes. Cluster 5, the biggest, contains the largest part of the remaning title types (except for videogame, which are mostly in Cluster 4).
+    \item Boolean variables: again, the cluster whose centroid had the highest value for \textit{numvotes}, \textit{totalImages}, \textit{totalCredits} and \textit{numRegions}, Cluster 2, also has the highest proportion of True values for \textit{hasVideos} and \textit{awardsAndNominations}, at around 50\%. The biggest cluster has the most True values for \textit{canHaveEpisodes} because it contains most of the series. Cluster 6 has almost no True values for \textit{hasVideos}, probably because it contains older titles.
 \end{itemize}
-With regards to \textit{numVotes}, the box plots for the different clusters don't add much information to the centroids' visualization: Clusters 0 and 6 have lower medians, but many upper outliers; Cluster 7, followed by Cluster 3, have the highest medians, but their large whiskers indicate that the data is very spread out.
+\begin{figure}
+    \includegraphics[width=\columnwidth]{../results/images/heatmap_titleType_bkmeans.png}
+    \caption{Heatmap Clusters vs titleType (BK-Means).}
+    \label{fig:heatmap_titleType_bkmeans.png}
+\end{figure}
+
+By visualizing the clusters' composition w.r.t. the numeric variables used by the algorithm, we can see how the line graph for \textit{startYear} (Figure \ref{fig:startYear_bkmeans.png}) shows important differences to the one for K-Means. Cluster 3 (the shorts' cluster) does contain the majority of records released before 1930s, but it actually has titles from all years: we were correct in assuming that it contains both older and newer shorts. Cluster 6 only has records released between the 1910s until 1999, and contains the majority of records released from 1955 until 1987. Cluster 5 (the biggest one) only contains newer titles, released since the 1980s.
+W.r.t. \textit{numGenres}, only Cluster 4 has no records with one genre: it contains the largest amount of records with three genres, as well as some with two. Clusters 5 and 6 are also quite pure, with a majority of records with one genre, a minority with two, and a negligible amount with three.
+\begin{figure}
+    \includegraphics[width=\columnwidth]{../results/images/startYear_bkmeans.png}
+    \caption{Number of titles by year for relevant clusters for BK-Means.}
+    \label{fig:startYear_bkmeans.png}
+\end{figure}
+
+In conclusion, although Bisecting K-Means has yielded worse metrics than K-Means, it has still produced meaningful clusters, comparable to those from K-Means. Both algorithms have created one or two clusters containing shorts, one containing a large portion of tvEpisodes, a cluster containing mainstream/popular content, and one with critically interesting titles. Neither clustering is separated w.r.t the rating (for both, the clusters are normally distributed against \textit{ratingNum}).
