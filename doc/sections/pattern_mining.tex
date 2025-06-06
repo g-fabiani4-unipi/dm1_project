@@ -44,6 +44,8 @@ After testing different \textit{minsup} values, we choose 30\%, as we get some i
 The first one captures a dependency we expect: a movie doesn't have episodes. This is similarly captured by the 7th, as the reported runtime is typical of movies and tv episodes. The 4th one represents many foreign titles, made in just one foreign country, while the 6th captures dramatic stand-alone titles from a single country: this can well describe telenovela episodes, or lower budget dramatic movies (as they are made in a single country).
 \begin{table}[ht]
 \small
+%\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{0.9}
 \centering
 \begin{tabular}{|>{\centering\arraybackslash}p{0.7cm}|>{\raggedleft\arraybackslash}p{4.1cm}|c|}
 \hline
@@ -84,8 +86,8 @@ The 30 rules with the highest lift all contain a \textit{titleType} either in th
 
 \begin{table}[ht]
     \small  % Shrinks font size for table
-    \setlength{\tabcolsep}{4pt}  % Reduces column padding
-    \renewcommand{\arraystretch}{1.1}  % Reduces row height
+    \setlength{\tabcolsep}{3pt}  % Reduces column padding
+    %\renewcommand{\arraystretch}{0}  % Reduces row height
     \centering
     \begin{tabular}{|p{3cm}|p{1.4cm}|c|c|c|}
     \hline
@@ -113,7 +115,7 @@ For each of these four \textit{titleType} classes, we implement the rule with th
 \begin{table}[ht]
     \small  % Shrinks font size for table
     \setlength{\tabcolsep}{4pt}  % Reduces column padding
-    \renewcommand{\arraystretch}{1.1}  % Reduces row height
+    \renewcommand{\arraystretch}{1}  % Reduces row height
     \centering
     \begin{tabular}{|p{2.4cm}|p{1.4cm}|c|c|c|}
     \hline
@@ -132,10 +134,12 @@ For each of these four \textit{titleType} classes, we implement the rule with th
     \label{tab:association_rules_titleType}
 \end{table}
 %COMPARE TO THE PERFORMANCE OF THE CLASSIFIERS IN CLASSIFICATION SECTION
-The performance of our simple rule-based classifier on the test set is reported in Table \ref{tab:class_report_rules}. It achieves an accuracy of 60\% and a macro F1 score of 68\%, outperforming our baseline model, a stratified dummy classifier trained on the training set, across all metrics. 
+The performance of our simple rule-based classifier on the test set is reported in Table \ref{tab:class_report_rules}. It achieves an accuracy of 60\% and a macro F1 score of 67.5\%, outperforming our baseline model, a stratified dummy classifier trained on the training set, across all metrics for all classes (accuracy: 25.4\%, macro F1: 20.4\%).
 \begin{table}[h]
     \centering
     \small
+    \setlength{\tabcolsep}{4pt}  % Reduces column padding
+    \renewcommand{\arraystretch}{0.9}
     \begin{tabular}{lcccc}
         \hline
         & \textbf{precision} & \textbf{recall} & \textbf{f1-score} & \textbf{support} \\
@@ -152,27 +156,6 @@ The performance of our simple rule-based classifier on the test set is reported 
     \end{tabular}
     \caption{Classification report for rule-based classification.}
     \label{tab:class_report_rules}
-\end{table}
-
-\begin{table}[h]
-    \centering
-    \small
-    \begin{tabular}{lcccc}
-    \hline
-    & \textbf{precision} & \textbf{recall} & \textbf{f1-score} & \textbf{support} \\
-    \hline
-    movie & 0.354 & 0.341 & 0.348 & 1877 \\
-    other & 0.151 & 0.151 & 0.151 & 789 \\
-    short & 0.129 & 0.133 & 0.131 & 766 \\
-    tvEpisode & 0.302 & 0.306 & 0.304 & 1599 \\
-    tvSeries & 0.086 & 0.089 & 0.088 & 447 \\
-    \hline
-    accuracy & & & \textbf{0.254} & 5478 \\
-    macro avg & 0.204 & 0.204 & \textbf{0.204} & 5478 \\
-    \hline
-    \end{tabular}
-    \caption{Classification report for the baseline classifier.}
-    \label{tab:classification_report}
 \end{table}
 
 The confusion matrix in Figure \ref{fig:heatmap_classification_rules_tts.png} allows us to understand what types of mistakes the classifier made and how the 'other' classes were classified. 

@@ -62,6 +62,8 @@ A first global analysis of the dataframe's summary and descriptive statistics al
 \begin{table}[h]
     \centering
     \small
+    %\setlength{\tabcolsep}{4pt}
+    \renewcommand{\arraystretch}{0.9}
     \caption{Features with missing values.}
     \begin{tabular}{|l|r|}
         \hline
@@ -156,6 +158,8 @@ On the other hand, \textit{runtimeMinutes} also has a right-skewed distribution,
     \centering
     \resizebox{\columnwidth}{!}{%
     \small
+    %\setlength{\tabcolsep}{4pt}
+    \renewcommand{\arraystretch}{0.9}
     \begin{tabular}{|p{2.7cm}|p{2.2cm}|p{1.6cm}|}
         \hline
         \textbf{originalTitle} & \textbf{runtimeMinutes} & \textbf{titleType} \\ \hline
@@ -190,6 +194,9 @@ The stratified barplot in Figure \ref{fig:stratified_barplot_genres_titleTypes.p
     \centering
     \small
     \resizebox{\columnwidth}{!}{%
+        \small
+    \setlength{\tabcolsep}{4pt}
+    \renewcommand{\arraystretch}{0.9}
     \begin{tabular}{|l|l|r|}
     \hline
     \textbf{titleType} & \textbf{top} & \textbf{\# NaN} \\ \hline
@@ -211,6 +218,8 @@ As previously mentioned in Subsection \ref{numeric_vars_analysis}, \textit{runti
 \begin{table}[h]
     \centering
     \small
+    %\setlength{\tabcolsep}{4pt}
+    \renewcommand{\arraystretch}{0.9}
     \begin{tabular}{|l|c|}
     \hline
     \textbf{titleType} & \textbf{median runtime} \\ \hline
