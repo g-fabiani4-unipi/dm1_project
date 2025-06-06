@@ -18,8 +18,8 @@ Looking at the records' data types, we can observe some syntactic inaccuracies: 
     \hline
     \textbf{Feature} & \textbf{Description} & \textbf{Type} & \textbf{Pandas dtype} \\ \hline
     runtimeMinutes & Primary runtime of the title, in minutes. & Continuous. Ratio-scaled. & float64 \\ \hline
-    startYear & Represents the release year of a title. In the case of TV Series, it is the series' start year. & Discrete. Interval. & int64 \\ \hline
-    endYear & TV Series end year. & Discrete. Interval. & float64 \\ \hline
+    startYear & Represents the release year of a title. In the case of TV Series, it is the series' start year. & Discrete.\newline Interval. & int64 \\ \hline
+    endYear & TV Series end year. & Discrete.\newline Interval. & float64 \\ \hline
     ratingCount & The total number of user ratings submitted for the title. & Discrete. Ratio-scaled. & int64 \\ \hline
     numVotes & Number of votes the title has received. & Discrete. Ratio-scaled. & int64 \\ \hline
     numRegions & The regions number for this version of the title. & Discrete. Ratio-scaled. & int64 \\ \hline
@@ -61,6 +61,9 @@ A first global analysis of the dataframe's summary and descriptive statistics al
 
 \begin{table}[h]
     \centering
+    \small
+    %\setlength{\tabcolsep}{4pt}
+    \renewcommand{\arraystretch}{0.9}
     \caption{Features with missing values.}
     \begin{tabular}{|l|r|}
         \hline
@@ -155,6 +158,8 @@ On the other hand, \textit{runtimeMinutes} also has a right-skewed distribution,
     \centering
     \resizebox{\columnwidth}{!}{%
     \small
+    %\setlength{\tabcolsep}{4pt}
+    \renewcommand{\arraystretch}{0.9}
     \begin{tabular}{|p{2.7cm}|p{2.2cm}|p{1.6cm}|}
         \hline
         \textbf{originalTitle} & \textbf{runtimeMinutes} & \textbf{titleType} \\ \hline
@@ -189,6 +194,9 @@ The stratified barplot in Figure \ref{fig:stratified_barplot_genres_titleTypes.p
     \centering
     \small
     \resizebox{\columnwidth}{!}{%
+        \small
+    \setlength{\tabcolsep}{4pt}
+    \renewcommand{\arraystretch}{0.9}
     \begin{tabular}{|l|l|r|}
     \hline
     \textbf{titleType} & \textbf{top} & \textbf{\# NaN} \\ \hline
@@ -209,6 +217,9 @@ The stratified barplot in Figure \ref{fig:stratified_barplot_genres_titleTypes.p
 As previously mentioned in Subsection \ref{numeric_vars_analysis}, \textit{runtimeMinutes} is dependent on the \textit{titleType} of a record (cf. Figure \ref{fig:kde_runtimeMinutes_doppio.png}): movies are generally longer than TV episodes, and shorts are typically shorter than both. Since we have some missing values for \textit{runtimeMinutes}, we can use the median value for the respective type to fill them (Table \ref{tab:median_runtime}).
 \begin{table}[h]
     \centering
+    \small
+    %\setlength{\tabcolsep}{4pt}
+    \renewcommand{\arraystretch}{0.9}
     \begin{tabular}{|l|c|}
     \hline
     \textbf{titleType} & \textbf{median runtime} \\ \hline
