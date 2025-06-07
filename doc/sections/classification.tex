@@ -1,8 +1,10 @@
 %ADD INTRO TO CLASSIFICATION
 % two target variables → detail binned rating
+% log_runtime for all models for fair comparison
 % knn: only numeric, NB and DT: both numeric and all feats
 % detail evaluation → classification report, conf matrix, ROC AUC score (although not relevant bc the dataset is unbalanced), PR curve and AUC
 % dummy classifier benchmarks for the two target variables
+
 
 \begin{table}[h]
     \centering
@@ -63,7 +65,7 @@ Both models outperform the baseline, but the CategoricalNB model performs signif
 \begin{table}[ht]
     \centering
     \small
-    \setlength{\tabcolsep}{4pt}
+    \setlength{\tabcolsep}{3pt}
     \renewcommand{\arraystretch}{0.9}
     \begin{tabular}{l|cccc}
     \hline
@@ -107,7 +109,7 @@ On this task, the performance of the two models was less satisfactory. Neverthel
 \begin{table}[ht]
     \centering
     \small
-    \setlength{\tabcolsep}{4pt}
+    \setlength{\tabcolsep}{3pt}
     \renewcommand{\arraystretch}{0.9}
     \begin{tabular}{l|cccc}
     \hline
@@ -120,7 +122,7 @@ On this task, the performance of the two models was less satisfactory. Neverthel
     \caption{Performance of GaussianNB and CategoricalNB models on \textit{binned rating}.}
     \label{tab:gnb_cnb_comparison_rating}
 \end{table}
-For the GaussianNB model, the confusion matrix (Figure \ref{fig:conf_matr_rating_NB.png}) shows confusion amongst all classes, in particular w.r.t Medium-High, the most popular class (which is the one with the best recall and F1, 0.494 and 0.428): it gets predicted the most. Medium-Low has a particularly low recall (0.173): its records are classified more frequently as any other class (especially as Medium-High and Low) than as itself. 
+For the GaussianNB model, the confusion matrix (Figure \ref{fig:conf_matr_rating_NB.png}) shows confusion among all classes, in particular w.r.t Medium-High, the most popular class (which is the one with the best recall and F1, 0.494 and 0.428): it gets predicted the most. Medium-Low has a particularly low recall (0.173, the benchmark is 0.275): its records are classified more frequently as any other class (especially as Medium-High and Low) than as itself. 
 High and Medium-High are mostly confused among themselves, this is especially true for High, which has the lowest precision (0.251).
 
 The Categorical NB model's overall performance is better than the Gaussian's, but actually this is mostly due to the great improvement of the Low class (F1 went from 0.361 to 0.55): 2/3 of its records are now classified correctly, the misclassified ones are quite balanced among the three remaining classes. All other classes have has a slight decrease in macro F1.
@@ -140,6 +142,116 @@ Medium-High and High both had an improvement in precision, at the cost of recall
 \end{figure}
 
 \subsection{Decision Tree Classifier}
-\label{naive_bayes}
+\label{dt}
+We build two models for each target variable, one using only numerical features and one using all features except the target variable. For categorical features we repeat the preprocessing detailed in Subsec. \ref{naive_bayes}. Decision Trees (DTs) do not require feature scaling, but they are prone to overfitting, therefore we apply pre-pruning and post-pruning techniques. We use a random search to find the best combination of hyperparameters for each model from the following grid: 
+
+\begin{lstlisting}[basicstyle=\footnotesize\ttfamily]
+  {'max_depth': [None] + list(np.arange(2, 20)),
+  'min_samples_split': [2, 5, 10, 15, 20, 30, 50, 100],
+  'min_samples_leaf': [1, 5, 10, 15, 20, 30, 50, 100],
+  'criterion': ['gini', 'entropy']}
+\end{lstlisting}
+The random search is performed with 5-fold stratified cross-validation, repeated 5 times. Keeping the best hyperparameters found fixed, we then find the value of the \textit{ccp\_alpha} parameter that maximises the average macro F1 score of the validation sets in a 5-fold stratified cross-validation as a form of post-pruning.
+
 \subsubsection{Target: \textit{titleType}}
+Both models not only outperform the baseline, but also both Naïve Bayes models. The DT using all features has better performances, especially in terms of macro F1 and PR AUC (cf. Table \ref{tab:dts_comparison_tts}): it is superior both at fixed thresholds and across the score distribution.
+
+
+\begin{table}[h]
+    \centering
+    \small
+    \setlength{\tabcolsep}{4pt}
+    \renewcommand{\arraystretch}{0.9}
+    \begin{tabular}{l|ccccc}
+        \hline
+        \textbf{Model} & \makecell{\textbf{max\_}\\\textbf{depth}} & \makecell{\textbf{min\_s}\\\textbf{\_split}} & \makecell{\textbf{min\_s}\\\textbf{\_leaf}} & \textbf{criterion} & \makecell{\textbf{ccp\_}\\\textbf{alpha}} \\
+        \hline
+        Num. & 10 & 50 & 10 & gini & 2.67e-4 \\
+        All. & 13 & 30 & 5 & entropy & 3.37e-4 \\
+        \hline
+    \end{tabular}
+    \caption{Best hyperparameters for DTs on \textit{titleType}.}
+    \label{tab:hyperparams_dts_tts}
+\end{table}
+
+\begin{table}[ht]
+    \centering
+    \small
+    \setlength{\tabcolsep}{3pt}
+    \renewcommand{\arraystretch}{0.9}
+    \begin{tabular}{l|cccc}
+    \hline
+    \textbf{Model} & \textbf{Accuracy} & \textbf{Macro F1} & \textbf{ROC AUC} & \textbf{PR AUC} \\
+    \hline
+    Num. & 0.827 & 0.578 & 0.931 & 0.585 \\
+    All & 0.846 & 0.661 & 0.913 & 0.682 \\
+    \hline
+    \end{tabular}
+    \caption{Performance of DTs models using only numeric vs all features on \textit{titleType}.}
+    \label{tab:dts_comparison_tts}
+\end{table}
+
+Analysing the classification report and confusion matrix of the\textbf{ numeric-only DT}, we can see that the three most popular classes have the best scores (macro f1 >= 0.845), especially in terms of recall. Videogame, although having a lower support, performs similarly (macro f1 = 0.832), being barely misclassified. The \textbf{second model} shows an increase in performances, especially for the less popular classes, both in terms of PR curve and macro F1. The models has learnt to distinguish tvMiniSeries and tvSeries from the rest, with the latter having the 2nd highest macro F1 (0.940). The best performing class is now videogame (macro F1 = 0.945), which is classified correctly most of the time.
+Looking at their \textbf{feature importances}, both models rely on \textit{logRuntime}, but while the first one does so heavily (0.756), the second one less so (0.451). Unsurprisingly, the 2nd most important feature for the 2nd DT is \textit{canHaveEpisodes}, followed by the genre \textit{Short}.
+
+In fact, for both trees the first split is on \textit{logRuntime}<= 4.119 ($\approx$ 60.5 minutes): this already allows to separate all shorts, tvShort, and videogames.
+For the \textbf{numeric DT}, the second split on \textit{logRuntime}<= 3.068 ($\approx$20.5 minutes) separates medium-lenght tvMovies and movies of the left subtree, as well as all videogames (minus 1). On the right subtree, splitting the longer titles based on having more than an image separates among them most of the movies, tvEpisodes and tvMovies.
+For the \textbf{all-features DT} (Figure \ref{fig:dt_all_feats_tts.png}), in two more splits we get to a node in the right subtree wich will lead to a leaf: it's adult videos that are longer than an hour and released since 1991. On the left subtree, we get to a leaf contaning \textit{tvSeries}in 3 total splits as well: the are at most an hour long, have \textit{Short} as a genre, and can have episodes. It's also worth noting that all videogames (minus 1) are again isolated in just two splits: they are shorter than 61 minutes and are tagged as genre \textit{Short}.
+\begin{figure*}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{../results/images/dt_all_feats_tts.png}
+    \caption{All-features DT for \textit{titleType}, max\_depth=2 (left= True, right= False).}
+    \label{fig:dt_all_feats_tts.png}
+\end{figure*}
+
 \subsubsection{Target: \textit{binned rating}}
+In this case, each model overall outperforms the baseline and its corresponding Naïve Bayes model; again, the all-features DT is the best performing one (cf. Table \ref{tab:dts_comparison_rating}).
+\begin{table}[h]
+    \centering
+    \small
+    \setlength{\tabcolsep}{4pt}
+    \renewcommand{\arraystretch}{0.9}
+    \begin{tabular}{l|ccccc}
+        \hline
+        \textbf{Model} & \makecell{\textbf{max\_}\\\textbf{depth}} & \makecell{\textbf{min\_s}\\\textbf{\_split}} & \makecell{\textbf{min\_s}\\\textbf{\_leaf}} & \textbf{criterion} & \makecell{\textbf{ccp\_}\\\textbf{alpha}} \\
+        \hline
+        Num. & 6 & 2 & 50 & gini & 0.0 \\
+        All. & 11 & 100 & 5 & entropy & 4.49e-4 \\
+        \hline
+    \end{tabular}
+    \caption{Best hyperparameters on \textit{binned rating}.}
+    \label{tab:hyperparams_dts_rating}
+\end{table}
+
+\begin{table}[ht]
+    \centering
+    \small
+    \setlength{\tabcolsep}{3pt}
+    \renewcommand{\arraystretch}{0.9}
+    \begin{tabular}{l|cccc}
+    \hline
+    \textbf{Model} & \textbf{Accuracy} & \textbf{Macro F1} & \textbf{ROC AUC} & \textbf{PR AUC} \\
+    \hline
+    Num. & 0.419 & 0.341 & 0.678 & 0.388 \\
+    All & 0.443 & 0.405 & 0.704 & 0.429 \\
+    \hline
+    \end{tabular}
+    \caption{Performance of DTs models using only numeric vs all features on \textit{binned rating}.}
+    \label{tab:dts_comparison_rating}
+\end{table}
+
+The most notable thing for the \textbf{numeric-only DT} is the increadibly low recall for class High (0.06), lower than the dummy classifier's (0.135): this class only had 2417 records in the training set, while all other had over 4500  – the model hasn't generalized on it, it only predicts it 3.21\% of the times when it represents 14.71\% of the test set.
+Medium-Low also has a lower recall (0.175), similar to the Gaussian NB's; it is mostly classified as Low and Medium-High.
+Low is the class with the best performances, and still it was correctly classified only around 65\% of the times. It is followed with similar, though slightly worse, performances by Medium-High, the most popular and most predicted class (around 43\% of predictions).
+The \textbf{all-features DT} shows a dramatic improvement for the lowest performing class, High, especially for its recall (0.180), which finally surpasses the benchmark. The model has started to generalize on it: it predicts it twice as many times, especially for itself and its closest class, Medium-High. Medium-Low has also seen a great improvement in recall (0.319). Nevertheless, both classes get misclassified most of the time.
+Low has suffered a small decrease in recall in return (0.603), but remains the best performing class.
+
+The 3 most important features for the numeric-only DT are \textit{logRuntime}, \textit{startYear} and \textit{numVotes} (0.41, 0.29, 0.14, respectively), whereas for the all-features DT they are \textit{tvEpisode}, \textit{startYear} and \textit{numVotes} (0.22, 0.14, 0.14, respectively): this is the only model where the runtime is not the most important feature.
+Looking at the first two levels of the DTs, we can see that the nodes are not very pure. For the numeric-only DT, the first split is on \textit{logRuntime}<= 60.5 minutes manages to separate a significant part of the Medium-High and High classes (they are shorter) on the left subtree. For the all-features DT (Figure \ref{fig:dt_all_feats_rating.png}), the first split is on \textit{tvEpisode}: the left subtree (not tvEpisode) separates the most part of the Low and Medium-Low classes, the subsequent split on movie further separates the High class: a large part of them are note tvEpisodes and are not movies.
+\begin{figure*}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{../results/images/dt_all_feats_rating.png}
+    \caption{All-features DT for \textit{binned rating}, max\_depth=2 (left= True, right= False).}
+    \label{fig:dt_all_feats_rating.png}
+\end{figure*}
+
