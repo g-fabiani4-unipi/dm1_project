@@ -6,6 +6,9 @@
 \usepackage{booktabs}
 \usepackage{array}
 \usepackage{tabularx}
+\usepackage{listings}
+\usepackage{makecell} 
+\usepackage{multirow}
 
 \usepackage{geometry}
 \geometry{top=1cm,bottom=1.5cm,left=2.5cm,right=2.5cm,includehead,includefoot}
@@ -14,9 +17,18 @@
 \begin{document}
 \author{Giulia Fabiani \and Camilla Maffeis}
 \title{Data Mining 1 Project}
-\date{}
+\date{A.Y. 2024/2025}
 
-\maketitle
+%\maketitle
+
+% First page: title + TOC
+\begin{titlepage}
+    \maketitle
+    \vfill
+    \tableofcontents
+    \vfill
+\end{titlepage}
+%\twocolumn
 
 \section{Data understanding and preparation}
 \input{sections/data_preparation}
