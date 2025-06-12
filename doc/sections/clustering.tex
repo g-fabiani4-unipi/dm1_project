@@ -141,36 +141,81 @@ W.r.t. \textit{numGenres}, only Cluster 4 has no records with one genre: it cont
 In conclusion, although Bisecting K-Means has yielded worse metrics than K-Means, it has still produced meaningful clusters, comparable to those from K-Means. Both algorithms have created one or two clusters containing shorts, one containing a large portion of tvEpisodes, a cluster containing mainstream/popular content, and one with critically interesting titles. Neither clustering is separated w.r.t the rating (for both, the clusters are normally distributed against \textit{ratingNum}).
 
 \subsection{Hierarchical Clustering}
+In analyzing the dataset using agglomerative hierarchical clustering we initially entertained the idea of using a precomputed distance matrix in order to include categorical attributes.
+However we ultimately decided against this and used only the numeric features with euclidean distance in order to obtain results that are comparable with those obtained with centroid based methods, be able to use Ward's method for determining inter-cluster distances and escape the curse of dimensionality.
+This also enabled us to check if clusters computed on the basis of numerical features were able to capture information vehicolated by categorical features.
+
+We performed clustering using all linkage  criteria made available from the scikit learn library (single linkage, average linkage, complete linkage and Ward's method), visualized the dendrogram (figg. \ref{fig:dendrogram_single_link}-\ref{fig:dendrogram_ward}) for each clustering and selected an appropriate threshold value for further analysis.
+
+The \textbf{single linkage} criterion failed to yield an interesting clustering, as can be seen from the dendrogram at figure \ref{fig:dendrogram_single_link}.
+Cutting this dendrogram at any height would create several singleton clusters.
+This is an expected result, since single linkage performs poorly with noisy data.
 
 \begin{figure}
     \includegraphics[width=\columnwidth]{../results/images/dendrogram_single_link.png}
-    \caption{Dendrogram for hierarchical clustering obtained with single linkage}
+    \caption{Dendrogram for hierarchical clustering obtained with single linkage.}
+    \label{fig:dendrogram_single_link}
 \end{figure}
 
 \begin{figure}
     \includegraphics[width=\columnwidth]{../results/images/dendrogram_avg_link.png}
-    \caption{Dendrogram for hierarchical clustering obtained with average linkage (threshold 4.7)}
+    \caption{Dendrogram for hierarchical clustering obtained with average linkage (threshold 4.7.)}
+    \label{fig:dendrogram_avg_link}
 \end{figure}
 
 \begin{figure}
     \includegraphics[width=\columnwidth]{../results/images/dendrogram_complete_link.png}
     \caption{Dendrogram for hierarchical clustering obtained with complete linkage (threshold 7.5).}
+    \label{fig:dendrogram_complete_link}
 \end{figure}
 
 \begin{figure}
     \includegraphics[width=\columnwidth]{../results/images/dendrogram_ward.png}
     \caption{Dendrogram for hierarchical clustering obtained with Ward method (threshold 100).}
+    \label{fig:dendrogram_ward}
 \end{figure}
+
+\textbf{Group average} performed slightly better (fig \ref{fig:dendrogram_avg_link}), but produced a very unbalanced clustering: setting the threshold at 4.7 we obtained 5 clusters, with one single cluster (Cluster 5) containing 98\% of the records, as can be seen in fig \ref{fig:hier_clustering}. We obtained a Silhouette score of 0.206.
+
+\textbf{Complete linkage} also demonstrated the \emph{rich get richer} tendency of agglomerative clustering, producing clusters of variable size.
+We cut the dendrogram (fig. \ref{fig:dendrogram_complete_link}) at 7.5, obtaining 10 clusters with two major cluster containing more than 70\% of all records and several smaller clusters, six of which having less than 1,000 members. We obtained a Silhouette score of 0.056.
 
 \begin{figure}
     \includegraphics[width=\columnwidth]{../results/images/tsne_hier_clust.png}
-    \caption{Results of hierarchical clustering with with different strategies of calculating inter-cluster distances.}
+    \caption{Clusters obtained with different criteria. Visualized by tSNE.}
+    \label{fig:hier_clustering}
 \end{figure}
+
+\textbf{Ward's method} obtained the most balanced clustering. We cut the dendrogramm (fig. \ref{fig:dendrogram_ward}) at 100, obtaining 5 clusters and a Silhouette score of 0.157.
+
+
+We then evaluated the clusterings obtained with complete linkage and Ward's method with respect to the distribution of of categorical features.
+
+We found out that both Ward and complete linkage were able to create clusters containing mainly shorts: Ward's Cluster 1 captures 76\% of shorts and 85\% of tv shorts of the whole dataset and 80\% of it members are shorts or tv shorts; for complete linkage, Clusters 5 and 6 capture, in between them, 69\% of the total shorts and 87\% of tv shorts and are themselves fairly pure with respect to title type (78\% of members of Cluster 5 and 94\% of members of Cluster 6 are shorts or tv shorts).
+Figure \ref{fig:hier_clustering} shows notable overlap between the shorts clusters obtained by these two methods.
 
 \begin{figure}
     \includegraphics[width=\columnwidth]{../results/images/hier_clust_shorts.png}
+    \caption{Complete linkage clustering by year of release and runtime.}
+    \label{fig:hier_clustering_shorts}
 \end{figure}
+
+In fig \ref{fig:hier_clustering_shorts} we show the results of clustering with complete linkage by year of release and runtime.
+Here we can see that Cluster 4 (which is the most numerous), containing mainly movies and tv episodes is cleanly separated from the two shorts clusters by means of runtime.
+We can also see that the two clusters of shorts detected by the algorithm differ for date of release: Cluster 6 contains older shorts, while Cluster 5 contains shorts that were realeased from the 60s onwards.
+From the dendrogram in fig. \ref{fig:dendrogram_complete_link}, we can see that, had we selected a higher threshold for splitting the dendrogram, these two clusters would be merged together.
 
 \begin{figure*}
     \includegraphics[width=\textwidth]{../results/images/hier_clust_awards.png}
+    \caption{Complete linkage clustering by runtime and number of votes}
+    \label{fig:hier_clustering_awards}
 \end{figure*}
+
+Some of the smallest clusters obtained with complete linkage also proved interesting. In fig. \ref{fig:hier_clustering_awards} we can see that Cluster 1 and 2 (that contain mainly movies and some tv series) contain titles that are on average more popular that all other titles in the dataset (they have a higher number of votes), but the ones in Cluster 1 are the most popular: this cluster contains blockbusters like \emph{Harry Potter and the Deathly Hallows -- Part 2}, \emph{Il buono, il brutto, il cattivo} and \emph{Full metal jacket}, just to name a few, as well as very popular TV series like \emph{The Witcher} and \emph{Euphoria}.
+
+Moreover, almost all (96\%) records from cluster 1 received awards or nominations and almost all of them (94\%) have attached videos on their IMDB page.
+Of the slightly less popular records from Cluster 2, 65\% received awards or nominations, while 72\% have videos on their IMDB page, while the values for the entire database are much lower (respectively 17\% and 10\%).
+
+Similar results emerge in the clustering with average linkage, where 83\% of the 305 records of Cluster 1 (which in figure \ref{fig:hier_clustering} is shown to overlap significantly with the previous two clusters) received awards and nominations and 91\% have attached videos on their IMDB page.
+
+It should be mentioned that the aforementioned clusters capture only a small part of all records that received awards or nominations, but this is, nevertheless, an interesting result, since we only used the numerical features for the clustering, so no information about awards or videos was provided to the model.
