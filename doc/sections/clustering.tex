@@ -143,6 +143,33 @@ W.r.t. \textit{numGenres}, only Cluster 4 has no records with one genre: it cont
 
 In conclusion, although Bisecting K-Means has yielded worse metrics than K-Means, it has still produced meaningful clusters, comparable to those from K-Means. Both algorithms have created one or two clusters containing shorts, one containing a large portion of tvEpisodes, a cluster containing mainstream/popular content, and one with critically interesting titles. Neither clustering is separated w.r.t the rating (for both, the clusters are normally distributed against \textit{ratingNum}).
 
+\subsection{Density-based clustering}
+\begin{figure}
+    \includegraphics[width=\columnwidth]{../results/images/db_scan_eps.png}
+    \caption{Sorted distances from the 16\textsuperscript{th} neighbor.}
+    \label{fig:dbscan}
+\end{figure}
+
+\subsubsection{DBSCAN}
+In order to choose the hyperparameters $\epsilon$ and \emph{MinPts}, we experimented with plotted the sorted distances from the k\textsuperscript{th} neighbor for several values of k (powers of 2 between 8 and 512) and checked for the presence of an elbow in the plot.
+We then fixed \emph{MinPts} to a value of k (we choose 16, since all values of k gave use very similar curves) and used the elbow in the plot to choose a suitable value for $\epsilon$.
+
+In fig. \ref{fig:dbscan} we can see that the elbow of the curve is around 1.5, so we run the clustering algorithm with \emph{MinPts}=16 and $\epsilon$=1.5. DBSCAN classified almost 99\% of our titles as noise points and clustered together all remaining titles.
+
+\subsubsection{OPTICS}
+Since we failed to detect significative clusters in the data determining $\epsilon$ with the elbow method, we decided to run OPTICS with the same value of \emph{MinPts} and inspect the reachability plot.
+
+\begin{figure}
+    \includegraphics[width=\columnwidth]{../results/images/optics_reachability.png}
+    \caption{Reachability plot produced by OPTICS with \emph{MinPts}=16}
+    \label{fig:reachability}
+\end{figure}
+
+In fig. \ref{fig:reachability} we can see that the reachability plot doesn't show any real valleys which would allow us to detect significant clusters.
+It is possible that our data is simply too noisy to be suitable for this type of analysis.
+Still, setting $\epsilon$ to 1.2, we were able to extract 3 clusters of similar sizes and remove 1188 noise points. This clustering obtained a Silhouette score of 0.09.
+The only notable trend found in the analysis of this clustering is that they cleanly split the titles by number of genres.
+
 \subsection{Hierarchical Clustering}
 In analyzing the dataset using agglomerative hierarchical clustering we initially entertained the idea of using a precomputed distance matrix in order to include categorical attributes.
 However we ultimately decided against this and used only the numeric features with euclidean distance in order to obtain results that are comparable with those obtained with centroid based methods, be able to use Ward's method for determining inter-cluster distances and escape the curse of dimensionality.
@@ -166,6 +193,11 @@ This is an expected result, since single linkage performs poorly with noisy data
     \label{fig:dendrogram_avg_link}
 \end{figure}
 
+\textbf{Group average} performed slightly better (fig \ref{fig:dendrogram_avg_link}), but produced a very unbalanced clustering: setting the threshold at 4.7 we obtained 5 clusters, with one single cluster (Cluster 5) containing 98\% of the records, as can be seen in fig \ref{fig:hier_clustering}. We obtained a Silhouette score of 0.206.
+
+\textbf{Complete linkage} also demonstrated the \emph{rich get richer} tendency of agglomerative clustering, producing clusters of variable size.
+We cut the dendrogram (fig. \ref{fig:dendrogram_complete_link}) at 7.5, obtaining 10 clusters with two major cluster containing more than 70\% of all records and several smaller clusters, six of which having less than 1,000 members. We obtained a Silhouette score of 0.056.
+
 \begin{figure}
     \includegraphics[width=\columnwidth]{../results/images/dendrogram_complete_link.png}
     \caption{Dendrogram for hierarchical clustering obtained with complete linkage (threshold 7.5).}
@@ -177,11 +209,6 @@ This is an expected result, since single linkage performs poorly with noisy data
     \caption{Dendrogram for hierarchical clustering obtained with Ward method (threshold 100).}
     \label{fig:dendrogram_ward}
 \end{figure}
-
-\textbf{Group average} performed slightly better (fig \ref{fig:dendrogram_avg_link}), but produced a very unbalanced clustering: setting the threshold at 4.7 we obtained 5 clusters, with one single cluster (Cluster 5) containing 98\% of the records, as can be seen in fig \ref{fig:hier_clustering}. We obtained a Silhouette score of 0.206.
-
-\textbf{Complete linkage} also demonstrated the \emph{rich get richer} tendency of agglomerative clustering, producing clusters of variable size.
-We cut the dendrogram (fig. \ref{fig:dendrogram_complete_link}) at 7.5, obtaining 10 clusters with two major cluster containing more than 70\% of all records and several smaller clusters, six of which having less than 1,000 members. We obtained a Silhouette score of 0.056.
 
 \begin{figure}
     \includegraphics[width=\columnwidth]{../results/images/tsne_hier_clust.png}
