@@ -43,16 +43,17 @@ The first thing that emerges from the parallel coordinates graph (Figure \ref{fi
         \centering
         \setlength{\tabcolsep}{4pt}  % Reduces column padding
         \renewcommand{\arraystretch}{0.9}
-        \begin{tabular}{|c|c|}
-            \hline
-            \textbf{Clust.} & \textbf{\# of records} \\ \hline
-            0 & 4841 \\ \hline
-            1 & 1985 \\ \hline
-            2 & 3424 \\ \hline
-            3 & 1424 \\ \hline
-            4 & 1985 \\ \hline
-            5 & 1822 \\ \hline
-            6 & 950 \\ \hline
+        \begin{tabular}{cc}
+            \toprule
+            \textbf{Clust.} & \textbf{\# of records} \\ \midrule
+            0 & 4841 \\
+            1 & 1985 \\
+            2 & 3424 \\
+            3 & 1424 \\
+            4 & 1985 \\
+            5 & 1822 \\
+            6 & 950 \\
+            \bottomrule
         \end{tabular}
         \caption{Clusters for K-Means.}
         \label{tab:clusters_kmeans}
@@ -63,16 +64,18 @@ The first thing that emerges from the parallel coordinates graph (Figure \ref{fi
         \small
         \setlength{\tabcolsep}{4pt}  % Reduces column padding
         \renewcommand{\arraystretch}{0.9}
-        \begin{tabular}{|c|c|}
-            \hline
-            \textbf{Clust.} & \textbf{\# of records} \\ \hline
-            0 & 1881 \\ \hline
-            1 & 1398 \\ \hline
-            2 & 1397 \\ \hline
-            3 & 1712 \\ \hline
-            4 & 3595 \\ \hline
-            5 & 4184 \\ \hline
-            6 & 2264 \\ \hline
+        \begin{tabular}{cc}
+           \toprule
+            \textbf{Clust.} & \textbf{\# of records} \\
+            \midrule
+            0 & 1881 \\
+            1 & 1398 \\
+            2 & 1397 \\
+            3 & 1712 \\
+            4 & 3595 \\
+            5 & 4184 \\
+            6 & 2264 \\
+            \bottomrule
         \end{tabular}
         \caption{Clusters for BK-Means.}
         \label{tab:clusters_bkmeans}
@@ -211,7 +214,8 @@ From the dendrogram in fig. \ref{fig:dendrogram_complete_link}, we can see that,
     \label{fig:hier_clustering_awards}
 \end{figure*}
 
-Some of the smallest clusters obtained with complete linkage also proved interesting. In fig. \ref{fig:hier_clustering_awards} we can see that Cluster 1 and 2 (that contain mainly movies and some tv series) contain titles that are on average more popular that all other titles in the dataset (they have a higher number of votes), but the ones in Cluster 1 are the most popular: this cluster contains blockbusters like \emph{Harry Potter and the Deathly Hallows -- Part 2}, \emph{Il buono, il brutto, il cattivo} and \emph{Full metal jacket}, just to name a few, as well as very popular TV series like \emph{The Witcher} and \emph{Euphoria}.
+Some of the smallest clusters obtained with complete linkage also proved interesting.
+In fig. \ref{fig:hier_clustering_awards} we can see that Cluster 1 and 2 (that contain mainly movies and some tv series and are merged at a higher threshold) contain titles that are on average more popular that all other titles in the dataset (they have a higher number of votes), but the ones in Cluster 1 are the most popular: this cluster contains blockbusters like \emph{Harry Potter and the Deathly Hallows -- Part 2}, \emph{Il buono, il brutto, il cattivo} and \emph{Full metal jacket}, just to name a few, as well as very popular TV series like \emph{The Witcher} and \emph{Euphoria}.
 
 Moreover, almost all (96\%) records from cluster 1 received awards or nominations and almost all of them (94\%) have attached videos on their IMDB page.
 Of the slightly less popular records from Cluster 2, 65\% received awards or nominations, while 72\% have videos on their IMDB page, while the values for the entire database are much lower (respectively 17\% and 10\%).
