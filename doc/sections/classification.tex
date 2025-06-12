@@ -122,7 +122,7 @@ On this task, the performance of the two models was less satisfactory. Neverthel
     \caption{Performance of GaussianNB and CategoricalNB models on \textit{binned rating}.}
     \label{tab:gnb_cnb_comparison_rating}
 \end{table}
-For the GaussianNB model, the confusion matrix (Figure \ref{fig:conf_matr_rating_NB.png}) shows confusion among all classes, in particular w.r.t Medium-High, the most popular class (which is the one with the best recall and F1, 0.494 and 0.428): it gets predicted the most. Medium-Low has a particularly low recall (0.173, the benchmark is 0.275): its records are classified more frequently as any other class (especially as Medium-High and Low) than as itself. 
+For the GaussianNB model, the confusion matrix (Figure \ref{fig:conf_matr_rating_NB.png}) shows confusion among all classes, in particular w.r.t Medium-High, the most popular class (which is the one with the best recall and F1, 0.494 and 0.428): it gets predicted the most. Medium-Low has a particularly low recall (0.173, the benchmark is 0.275): its records are classified more frequently as any other class (especially as Medium-High and Low) than as itself.
 High and Medium-High are mostly confused among themselves, this is especially true for High, which has the lowest precision (0.251).
 
 The Categorical NB model's overall performance is better than the Gaussian's, but actually this is mostly due to the great improvement of the Low class (F1 went from 0.361 to 0.55): 2/3 of its records are now classified correctly, the misclassified ones are quite balanced among the three remaining classes. All other classes have has a slight decrease in macro F1.
@@ -143,7 +143,7 @@ Medium-High and High both had an improvement in precision, at the cost of recall
 
 \subsection{Decision Tree Classifier}
 \label{dt}
-We build two models for each target variable, one using only numerical features and one using all features except the target variable. For categorical features we repeat the preprocessing detailed in Subsec. \ref{naive_bayes}. Decision Trees (DTs) do not require feature scaling, but they are prone to overfitting, therefore we apply pre-pruning and post-pruning techniques. We use a random search to find the best combination of hyperparameters for each model from the following grid: 
+We build two models for each target variable, one using only numerical features and one using all features except the target variable. For categorical features we repeat the preprocessing detailed in Subsec. \ref{naive_bayes}. Decision Trees (DTs) do not require feature scaling, but they are prone to overfitting, therefore we apply pre-pruning and post-pruning techniques. We use a random search to find the best combination of hyperparameters for each model from the following grid:
 
 \begin{lstlisting}[basicstyle=\footnotesize\ttfamily]
   {'max_depth': [None] + list(np.arange(2, 20)),
