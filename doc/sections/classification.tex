@@ -33,9 +33,9 @@ The dummy obtained accuracy .233 and macro F1 .102 on the first task and accurac
 %     \setlength{\tabcolsep}{4pt}
 %     \renewcommand{\arraystretch}{0.9}
 %     \begin{tabular}{lcccc}
-%         \hline
+%
 %         & \textbf{precision} & \textbf{recall} & \textbf{f1-score} & \textbf{support} \\
-%         \hline
+%
 %         movie & 0.353 & 0.331 & 0.341 & 1877 \\
 %         short & 0.162 & 0.183 & 0.172 & 766 \\
 %         tvEpisode & 0.275 & 0.282 & 0.278 & 1599 \\
@@ -46,10 +46,10 @@ The dummy obtained accuracy .233 and macro F1 .102 on the first task and accurac
 %         tvSpecial & 0.016 & 0.020 & 0.018 & 49 \\
 %         video & 0.035 & 0.032 & 0.033 & 250 \\
 %         videoGame & 0.013 & 0.011 & 0.012 & 94 \\
-%         \hline
+%
 %         accuracy & & & \textbf{0.233} & 5478 \\
 %         macro avg & 0.102 & 0.102 & \textbf{0.102} & 5478 \\
-%         \hline
+%
 %     \end{tabular}
 %     \caption{Classification report for the Dummy Classifier on \textit{titleType}.}
 %     \label{tab:class_report_dummy_titleType}
@@ -61,28 +61,29 @@ The dummy obtained accuracy .233 and macro F1 .102 on the first task and accurac
 %     \setlength{\tabcolsep}{3pt}
 %     \renewcommand{\arraystretch}{0.9}
 %     \begin{tabular}{p{2.1cm}cccc}
-%         \hline
+%
 %         & \textbf{precision} & \textbf{recall} & \textbf{f1-score} & \textbf{support} \\
-%         \hline
+%
 %         Low & 0.277 & 0.268 & 0.273 & 1542 \\
 %         Medium-low & 0.267 & 0.275 & 0.271 & 1522 \\
 %         Medium-high & 0.305 & 0.312 & 0.309 & 1608 \\
 %         High & 0.141 & 0.135 & 0.138 & 806 \\
-%         \hline
+%
 %         accuracy & & & \textbf{0.264} & 5478 \\
 %         macro avg & 0.248 & 0.248 & \textbf{0.248} & 5478 \\
-%         \hline
+%
 %     \end{tabular}
 %     \caption{Classification report for the Dummy Classifier on \textit{binned rating}.}
 %     \label{tab:class_report_dummy_binned_rating}
 % \end{table}
 
 \subsection{K-Nearest Neighbor Classifier}
+\label{classification_knn}
 For each target feature we trained the knn classifier on all numerical features (log transformed if necessary) which were normalized using a standard scaler.
 
-In both cases we performed grid search in order to find the optimal configuration of hyperparamenters: we tested different values of \emph{k} between 2 and 500, two different distance functions (manhattan and euclidean) and wheter to weight exemplars by distance.
+In both cases we performed grid search in order to find the optimal configuration of hyperparamenters: we tested different values of \emph{k} between 2 and 500, two different distance functions (manhattan and euclidean) and whether to weight exemplars by distance.
 We evaluated the performance of each configuration of hyperparameters performing a 5-fold stratified cross validation on the training set and checking the mean accuracy.
-In order to limit the time used on this task, we performed the search in two steps, as illustrated by figg. \ref{fig:knn_grid} and \ref{fig:knn_grid_mini}:
+In order to limit the time spent on this task, we performed the search in two steps, as illustrated by figg. \ref{fig:knn_grid} and \ref{fig:knn_grid_mini}:
 
 \begin{enumerate}
     \item We performed grid search with values of \emph{k} between 2 and 500 using a step of 5;
@@ -113,7 +114,7 @@ In order to limit the time used on this task, we performed the search in two ste
 We fitted and tested the classifier with the following configuration of parameters:
 \begin{itemize}
     \item distance function: Manhattan
-    \item weight: distance
+    \item weights: distance
     \item k: 20 (as can be seen in fig. \ref{fig:knn_grid_mini} \emph{k}=14 obtained the highest mean accuracy score, but we preferred 20 because of the lower standard deviation).
 \end{itemize}
 
@@ -126,8 +127,8 @@ TV specials are sometimes misclassified as tv episodes (especially if shorter) a
 \subsubsection{Target: \emph{binned rating}}
 We fitted and tested the classifier with the following configuration of parameters:
 \begin{itemize}
-    \item distance function Manthattan
-    \item weight: distance
+    \item distance function Manhattan
+    \item weights: distance
     \item k: 95
 \end{itemize}
 
@@ -147,13 +148,13 @@ Both models outperform the baseline, but the CategoricalNB model performs signif
     \small
     \setlength{\tabcolsep}{3pt}
     \renewcommand{\arraystretch}{0.9}
-    \begin{tabular}{l|cccc}
-    \hline
+    \begin{tabular}{lrrrr}
+    \toprule
     \textbf{Model} & \textbf{Accuracy} & \textbf{Macro F1} & \textbf{ROC AUC} & \textbf{PR AUC} \\
-    \hline
+    \midrule
     GNB & 0.676 & 0.398 & 0.880 & 0.442 \\
     CNB & 0.773 & 0.557 & 0.944 & 0.584 \\
-    \hline
+    \bottomrule
     \end{tabular}
     \caption{Performance of GaussianNB and CategoricalNB models on \textit{titleType}.}
     \label{tab:gnb_cnb_comparison_tts}
@@ -191,13 +192,13 @@ On this task, the performance of the two models was less satisfactory. Neverthel
     \small
     \setlength{\tabcolsep}{3pt}
     \renewcommand{\arraystretch}{0.9}
-    \begin{tabular}{l|cccc}
-    \hline
+    \begin{tabular}{lrrrr}
+    \toprule
     \textbf{Model} & \textbf{Accuracy} & \textbf{Macro F1} & \textbf{ROC AUC} & \textbf{PR AUC} \\
-    \hline
+    \midrule
     GNB & 0.345 & 0.330 & 0.630 & 0.348 \\
     CNB & 0.427 & 0.387 & 0.680 & 0.398 \\
-    \hline
+    \bottomrule
     \end{tabular}
     \caption{Performance of GaussianNB and CategoricalNB models on \textit{binned rating}.}
     \label{tab:gnb_cnb_comparison_rating}
@@ -242,13 +243,13 @@ Both models not only outperform the baseline, but also both Naïve Bayes models.
     \small
     \setlength{\tabcolsep}{4pt}
     \renewcommand{\arraystretch}{0.9}
-    \begin{tabular}{l|ccccc}
-        \hline
+    \begin{tabular}{lrrrrr}
+        \toprule
         \textbf{Model} & \makecell{\textbf{max\_}\\\textbf{depth}} & \makecell{\textbf{min\_s}\\\textbf{\_split}} & \makecell{\textbf{min\_s}\\\textbf{\_leaf}} & \textbf{criterion} & \makecell{\textbf{ccp\_}\\\textbf{alpha}} \\
-        \hline
+        \midrule
         Num. & 10 & 50 & 10 & gini & 2.67e-4 \\
         All. & 13 & 30 & 5 & entropy & 3.37e-4 \\
-        \hline
+        \bottomrule
     \end{tabular}
     \caption{Best hyperparameters for DTs on \textit{titleType}.}
     \label{tab:hyperparams_dts_tts}
@@ -259,13 +260,13 @@ Both models not only outperform the baseline, but also both Naïve Bayes models.
     \small
     \setlength{\tabcolsep}{3pt}
     \renewcommand{\arraystretch}{0.9}
-    \begin{tabular}{l|cccc}
-    \hline
+    \begin{tabular}{lrrrr}
+    \toprule
     \textbf{Model} & \textbf{Accuracy} & \textbf{Macro F1} & \textbf{ROC AUC} & \textbf{PR AUC} \\
-    \hline
+    \midrule
     Num. & 0.827 & 0.578 & 0.931 & 0.585 \\
     All & 0.846 & 0.661 & 0.913 & 0.682 \\
-    \hline
+    \bottomrule
     \end{tabular}
     \caption{Performance of DTs models using only numeric vs all features on \textit{titleType}.}
     \label{tab:dts_comparison_tts}
@@ -280,7 +281,7 @@ For the \textbf{all-features DT} (Figure \ref{fig:dt_all_feats_tts.png}), in two
 \begin{figure*}[ht]
     \centering
     \includegraphics[width=\textwidth]{../results/images/dt_all_feats_tts.png}
-    \caption{All-features DT for \textit{titleType}, max\_depth=2 (left= True, right= False).}
+    \caption{All-features DT for \textit{titleType}, cut at depth 2 (left= True, right= False).}
     \label{fig:dt_all_feats_tts.png}
 \end{figure*}
 
@@ -291,13 +292,13 @@ In this case, each model overall outperforms the baseline and its corresponding 
     \small
     \setlength{\tabcolsep}{4pt}
     \renewcommand{\arraystretch}{0.9}
-    \begin{tabular}{l|ccccc}
-        \hline
+    \begin{tabular}{lccccc}
+        \toprule
         \textbf{Model} & \makecell{\textbf{max\_}\\\textbf{depth}} & \makecell{\textbf{min\_s}\\\textbf{\_split}} & \makecell{\textbf{min\_s}\\\textbf{\_leaf}} & \textbf{criterion} & \makecell{\textbf{ccp\_}\\\textbf{alpha}} \\
-        \hline
+        \midrule
         Num. & 6 & 2 & 50 & gini & 0.0 \\
         All. & 11 & 100 & 5 & entropy & 4.49e-4 \\
-        \hline
+        \bottomrule
     \end{tabular}
     \caption{Best hyperparameters on \textit{binned rating}.}
     \label{tab:hyperparams_dts_rating}
@@ -308,13 +309,13 @@ In this case, each model overall outperforms the baseline and its corresponding 
     \small
     \setlength{\tabcolsep}{3pt}
     \renewcommand{\arraystretch}{0.9}
-    \begin{tabular}{l|cccc}
-    \hline
+    \begin{tabular}{lrrrr}
+        \toprule
     \textbf{Model} & \textbf{Accuracy} & \textbf{Macro F1} & \textbf{ROC AUC} & \textbf{PR AUC} \\
-    \hline
+    \midrule
     Num. & 0.419 & 0.341 & 0.678 & 0.388 \\
     All & 0.443 & 0.405 & 0.704 & 0.429 \\
-    \hline
+    \bottomrule
     \end{tabular}
     \caption{Performance of DTs models using only numeric vs all features on \textit{binned rating}.}
     \label{tab:dts_comparison_rating}
@@ -331,7 +332,7 @@ Looking at the first two levels of the DTs, we can see that the nodes are not ve
 \begin{figure*}[ht]
     \centering
     \includegraphics[width=\textwidth]{../results/images/dt_all_feats_rating.png}
-    \caption{All-features DT for \textit{binned rating}, max\_depth=2 (left= True, right= False).}
+    \caption{All-features DT for \textit{binned rating}, cut at depth 2 (left= True, right= False).}
     \label{fig:dt_all_feats_rating.png}
 \end{figure*}
 
