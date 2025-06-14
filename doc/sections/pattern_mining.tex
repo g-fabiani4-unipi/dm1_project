@@ -26,21 +26,21 @@ critRevRat & [0, 0.227] & (0.227, 1] & -- & -- \\
 \subsection{Frequent Itemsets Extraction}
 We keep the minimum number of items in the itemsets (\textit{zmin}) fixed to two, as they could already be interesting. Figure \ref{fig:max_closed_itemsets.png} shows the number of closed and maximal frequent itemsets extracted for different \textit{minsup} values, ranging from 2\% to 30\%. The number of itemsets drops quickly, and after 25\% the two groups seem to start converging to lower values (< 250). We also look at the maximal frequent itemsets that contain our target variable, \textit{titleType} (Figure \ref{fig:max_itemsets_titleType.png}): there are none for the minority classes tvShort, videoGame, tvMiniSeries, tvSpecial, and we start losing more classes from \textit{minsup} > 4\%.
 
-\begin{figure}[ht]
+\begin{figure}
     \centering
     \includegraphics[width=0.8\columnwidth]{../results/images/max_closed_itemsets.png}
     \caption{N. of closed and maximal frequent itemsets for different \textit{minsup} values.}
     \label{fig:max_closed_itemsets.png}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}
     \centering
     \includegraphics[width=0.8\columnwidth]{../results/images/max_itemsets_titleType.png}
     \caption{N. of maximal frequent itemsets containing \textit{titleType}for different \textit{minsup} values.}
     \label{fig:max_itemsets_titleType.png}
 \end{figure}
 
-After testing different \textit{minsup} values, we choose 30\%, as we get some interesting maximal itemsets, rather than just a combination of the most frequent values for the different features. At this threshold, the frequent itemsets are 174 and they are all closed, while the maximal itemsets are only 26. In Table \ref{tab:maximal_itemsets} are reported some of the most interesting maximal itemsets, among the top 10 with the highest support. 
+After testing different \textit{minsup} values, we choose 30\%, as we get some interesting maximal itemsets, rather than just a combination of the most frequent values for the different features. At this threshold, the frequent itemsets are 174 and they are all closed, while the maximal itemsets are only 26. In Table \ref{tab:maximal_itemsets} are reported some of the most interesting maximal itemsets, among the top 10 with the highest support.
 The first one captures a dependency we expect: a movie doesn't have episodes. This is similarly captured by the 7th, as the reported runtime is typical of movies and tv episodes. The 4th one represents many foreign titles, made in just one foreign country, while the 6th captures dramatic stand-alone titles from a single country: this can well describe telenovela episodes, or lower budget dramatic movies (as they are made in a single country).
 \begin{table}[ht]
 \small
@@ -66,7 +66,7 @@ The first one captures a dependency we expect: a movie doesn't have episodes. Th
 
 \subsection{Association Rule Extraction}
 The heatmap in Figure \ref{fig:heatmap_association_rules.png} shows the number of association rules extracted by the FP-Growth algorithm for different \textit{minsup} and confidence (\textit{minconf}) thresholds. It is evident that the number of rules drops quickly as the \textit{minsup} increases, while it is less affected by \textit{minconf}. Therefore, we first kept a fixed low value of confidence (65\%) and experimented with different values of \textit{minsup}, increasing it by small increments. Once we found a value yielding an interesting list of rules, we increased the confidence threshold. We reached 80\% \textit{minconf} before losing interesting rules. The final hyperparameters are: \textit{zmin}=2, \textit{minsup}=9\% and \textit{minconf}=80\%.
-\begin{figure}[ht]
+\begin{figure}
     \centering
     \includegraphics[width=0.8\columnwidth]{../results/images/heatmap_association_rules.png}
     \caption{N. of association rules extracted for different \textit{minsup} and \textit{minconf} values.}
@@ -74,7 +74,7 @@ The heatmap in Figure \ref{fig:heatmap_association_rules.png} shows the number o
 \end{figure}
 
 The total number of rules extracted is 16466. The histograms in Figure \ref{fig:rules_conf_lift.png} show the rules' confidence and lift distributions. Given the high threshold, rules have high confidence, with the majority having \textit{conf} > 0.87. Nevertheless, the large majority is weak, with a lift < 1.
-\begin{figure}[ht]
+\begin{figure}
     \centering
     \includegraphics[width=\columnwidth]{../results/images/rules_conf_lift.png}
     \caption{Histograms of rules' confidence and lift.}
@@ -110,7 +110,7 @@ The 30 rules with the highest lift all contain a \textit{titleType} either in th
 
 \subsection{Classification: \textit{titleType}}
 Out of the extracted rules, 245 have a \textit{titleType} in the consequent: 144 have short, 89 have tvEpisode, 10 have movie, and two have tvSeries.
-For each of these four \textit{titleType} classes, we implement the rule with the highest support for a task of multiclass classification, for the sake of which the remaining classes are aggregated to 'other'. We favor the rules with the highest support because they are more general and include the most important items in the antecedent; nevertheless, we make sure that their lift is higher than 1. The selected rules are reported in Table \ref{tab:association_rules_titleType}. 
+For each of these four \textit{titleType} classes, we implement the rule with the highest support for a task of multiclass classification, for the sake of which the remaining classes are aggregated to 'other'. We favor the rules with the highest support because they are more general and include the most important items in the antecedent; nevertheless, we make sure that their lift is higher than 1. The selected rules are reported in Table \ref{tab:association_rules_titleType}.
 
 \begin{table}[ht]
     \small  % Shrinks font size for table
@@ -158,10 +158,10 @@ The performance of our simple rule-based classifier on the test set is reported 
     \label{tab:class_report_rules}
 \end{table}
 
-The confusion matrix in Figure \ref{fig:heatmap_classification_rules_tts.png} allows us to understand what types of mistakes the classifier made and how the 'other' classes were classified. 
-The information about having episodes was enough to achieve perfect recall for tvSeries, but of course all tvMiniSeries were also classified as such. The same happens for tvShorts, all classified as shorts – the same had happened for our other classifiers. The information about \textit{runtimeMinutes} has lead to some misclassification, as the binning is quite coarse-grained; this explains the lower recall for tvEpisodes and, especially, for movies: there's plenty of movies with a runtime < 90 minutes. 
+The confusion matrix in Figure \ref{fig:heatmap_classification_rules_tts.png} allows us to understand what types of mistakes the classifier made and how the 'other' classes were classified.
+The information about having episodes was enough to achieve perfect recall for tvSeries, but of course all tvMiniSeries were also classified as such. The same happens for tvShorts, all classified as shorts – the same had happened for our other classifiers. The information about \textit{runtimeMinutes} has lead to some misclassification, as the binning is quite coarse-grained; this explains the lower recall for tvEpisodes and, especially, for movies: there's plenty of movies with a runtime < 90 minutes.
 
-\begin{figure}[ht]
+\begin{figure}
     \centering
     \includegraphics[width=\columnwidth]{../results/images/heatmap_classification_rules_tts.png}
     \caption{Confusion Matrix for rule-based classifier (10 True × 5 Predicted).}

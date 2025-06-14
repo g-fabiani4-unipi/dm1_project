@@ -77,7 +77,7 @@ The outliers visible in this plot highlight supposedly particularly long running
 
 Most numeric features (\textit{awardWins}, \textit{numVotes}, \textit{totalImages}, \textit{totalVideos}, \textit{totalCredits}, \textit{criticReviewsTotal}, \textit{awardNominationsExcludeWins}, \textit{awardsAndNominations}, \textit{numRegions}, \textit{userReviewsTotal}, \textit{numCountriesOfOrigin}, \textit{reviewsTotal}) have heavily right-skewed distributions. It makes sense that the distribution of these types of features would approximate a power law. We can address this problem using a log transformation of these features.
 
-On the other hand, \textit{runtimeMinutes} also has a right-skewed distribution, but when excluding outliers (values higher than 3rd quartile + 1.5 IQR), we can see that, for the most part, runtimes are dependent on the \textit{titleType} and that the distribution of the runtime for each title type approximates a bell curve (Figure \ref{fig:kde_runtimeMinutes_doppio.png}); therefore, we prefer not to log transform this variable and be mindful of the presence of outliers. Examining the titles with a longer runtime reveals that part of the outliers is due to the inconsistent strategy used for the computation of the runtime for serialized titles (series and miniseries): in some cases, the episode runtime is provided, in others, it reports the runtime for the entire series, i.e. the sum of all its episodes' runtimes (some examples are reported in Table \ref{tab:outliers_runtime}).
+On the other hand, \textit{runtimeMinutes} also has a right-skewed distribution, but when excluding outliers (values higher than 3rd quartile + 1.5 IQR), we can see that, for the most part, runtimes are dependent on the \textit{titleType} and that the distribution of the runtime for each title type approximates a bell curve (Figure \ref{fig:kde_runtimeMinutes_doppio.png}); therefore, we prefer not to log transform this variable and be mindful of the presence of outliers. Examining the titles with a longer runtime reveals that part of the outliers is due to the inconsistent strategy used for the computation of the runtime for serialized titles (series and miniseries): in some cases, the episode runtime is provided, in others, it reports the runtime for the entire series, i.e. the sum of all its episodes' runtimes.
 
 \begin{figure}
     \centering
@@ -86,27 +86,27 @@ On the other hand, \textit{runtimeMinutes} also has a right-skewed distribution,
     \label{fig:kde_runtimeMinutes_doppio.png}
 \end{figure}
 
-\begin{table}
-    \centering
-    \resizebox{\columnwidth}{!}{%
-    \small
-    %\setlength{\tabcolsep}{4pt}
-    \renewcommand{\arraystretch}{0.9}
-    \begin{tabular}{p{2.7cm}p{2.2cm}p{1.6cm}}
-        \toprule
-        \textbf{originalTitle} & \textbf{runtimeMinutes} & \textbf{titleType} \\
-        \midrule
-        Alim Dayı & 3000 & tvSeries \\
-        Jerry Lewis MDA Labor Day Telethon & 1290 & tvSeries \\
-        Voice of the Planet & 600 & tvMiniSeries \\
-        Orbius & 570 & movie \\
-        Heritage: Civilization and the Jews & 540 & tvSeries \\
-        \bottomrule
-    \end{tabular}
-    }
-    \caption{Top 5 titles with the longest runtime.}
-    \label{tab:outliers_runtime}
-\end{table}
+% \begin{table}
+%     \centering
+%     \resizebox{\columnwidth}{!}{%
+%     \small
+%     %\setlength{\tabcolsep}{4pt}
+%     \renewcommand{\arraystretch}{0.9}
+%     \begin{tabular}{p{2.7cm}p{2.2cm}p{1.6cm}}
+%         \toprule
+%         \textbf{originalTitle} & \textbf{runtimeMinutes} & \textbf{titleType} \\
+%         \midrule
+%         Alim Dayı & 3000 & tvSeries \\
+%         Jerry Lewis MDA Labor Day Telethon & 1290 & tvSeries \\
+%         Voice of the Planet & 600 & tvMiniSeries \\
+%         Orbius & 570 & movie \\
+%         Heritage: Civilization and the Jews & 540 & tvSeries \\
+%         \bottomrule
+%     \end{tabular}
+%     }
+%     \caption{Top 5 titles with the longest runtime.}
+%     \label{tab:outliers_runtime}
+% \end{table}
 
 \subsection{Handling Missing Values}
 Four variables in the dataset have been found to contain missing values: \textit{endYear} (15,617), \textit{runtimeMinutes} (4,852), \textit{awardWins} (2,618), \textit{genres} (382).
