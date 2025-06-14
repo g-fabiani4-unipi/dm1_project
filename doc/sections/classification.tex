@@ -6,13 +6,13 @@ Since we noticed promising trends in the cluster analysis, we chose \emph{titleT
 In the second task we attempted to predict the rating of a title.
 Since we wanted to avoid having a great number of classes with very low support, we binned the rating values in four categories, each containing approximately the same number of records, as follows:
 \begin{description}
-    \item[Low] rating rating lower than 6
+    \item[Low] rating lower than 6
     \item[Medium-Low] rating between 6 and 7
     \item[Medium-High]  rating between 7 and 8
     \item[High] rating 8 or higher
 \end{description}
 
-For this second task we expected overall worse results, because none of our features showed high correlation with rating and we also saw that our records didn't cluster by rating in any significant way.
+For this second task we expected overall worse results, because none of our features showed high correlation with rating, and we also saw that our records didn't cluster by rating in any significant way.
 
 In evaluating our models, we considered not only the accuracy score, but also the macro average of F1 scores obtained for each class.
 Since the classes for the first have variable support, we reasoned that this second metric would be a better indicator of the overall performance of the models.
@@ -81,7 +81,7 @@ The dummy obtained accuracy .233 and macro F1 .102 on the first task and accurac
 \label{classification_knn}
 For each target feature we trained the knn classifier on all numerical features (log transformed if necessary) which were normalized using a standard scaler.
 
-In both cases we performed grid search in order to find the optimal configuration of hyperparamenters: we tested different values of \emph{k} between 2 and 500, two different distance functions (manhattan and euclidean) and whether to weight exemplars by distance.
+In both cases we performed grid search in order to find the optimal configuration of hyperparameters: we tested different values of \emph{k} between 2 and 500, two different distance functions (manhattan and euclidean) and whether to weight exemplars by distance.
 We evaluated the performance of each configuration of hyperparameters performing a 5-fold stratified cross validation on the training set and checking the mean accuracy.
 In order to limit the time spent on this task, we performed the search in two steps, as illustrated by figg. \ref{fig:knn_grid} and \ref{fig:knn_grid_mini}:
 
@@ -120,9 +120,9 @@ We fitted and tested the classifier with the following configuration of paramete
 
 This model obtained an accuracy of 0.78 and a macro F1 score of 0.42 on the test set, well exceeding the performance of the dummy classifier.
 
-In particular, as can be seen from the confusion matrix in figure \ref{fig:conf_matr_rating_NB.png}, the model has little troble identifying the three classes with higher support (movies, shorts and TV episodes have all F1 scores higher than 0.84) and is able to correctly detect tvSeries around half of the time.
-We can also see that tv movies, miniseries and videos are most frequently misclassified as movies, while tv shorts are almost always classified as shorts.
-TV specials are sometimes misclassified as tv episodes (especially if shorter) and sometimes as movies (especially if longer).
+In particular, as can be seen from the confusion matrix in figure \ref{fig:conf_matr_rating_NB.png}, the model has little trouble identifying the three classes with higher support (movies, shorts and TV episodes have all F1 scores higher than 0.84) and is able to correctly detect tvSeries around half of the time.
+We can also see that TV movies, miniseries and videos are most frequently misclassified as movies, while TV shorts are almost always classified as shorts.
+TV specials are sometimes misclassified as TV episodes (especially if shorter) and sometimes as movies (especially if longer).
 
 \subsubsection{Target: \emph{binned rating}}
 We fitted and tested the classifier with the following configuration of parameters:
@@ -133,13 +133,13 @@ We fitted and tested the classifier with the following configuration of paramete
 \end{itemize}
 
 This model obtained an accuracy of .44 and a macro F1 score of .34, exceeding the performance of the baseline in both metrics.
-Overall the performance on this target variable was less satifactory, as expected.
+Overall the performance on this target variable was less satisfactory, as expected.
 
-The inspection of the confusion matrix revealed confusion among all classes (not only adiacent classes), with only \emph{low} and \emph{medium high} obtaining a F1 score greater than .50. The worst performing class was \emph{high}, with an especially bad recall (0.14): more than half of the time titles with a high score were misclassified as \emph{medium high}, with the rest of the cases distributed seemingly at random in the remaining classes.
+The inspection of the confusion matrix revealed confusion among all classes (not only adjacent classes), with only \emph{low} and \emph{medium high} obtaining a F1 score greater than .50. The worst performing class was \emph{high}, with an especially bad recall (0.14): more than half of the time titles with a high score were misclassified as \emph{medium high}, with the rest of the cases distributed seemingly at random in the remaining classes.
 
 \subsection{Naïve Bayes Classifier}
 \label{naive_bayes}
-For each target variable, we build two models, one using only numerical features (Gaussian NB), and one using all features except the target variable (Categorical NB). The latter requires preprocessing: we discretize the numerical features into quartile-based bins and encode categorical features using one-hot encoding. For \textit{countriesOfOrigin} we only keep the 40 most frequent countries to reduce dimensionality. Given their nature, Naïve Bayes Classifiers don't require feature scaling or feature selection: they rely on probablities rather than distances and are robust to irrelevant features.
+For each target variable, we build two models, one using only numerical features (Gaussian NB), and one using all features except the target variable (Categorical NB). The latter requires preprocessing: we discretize the numerical features into quartile-based bins and encode categorical features using one-hot encoding. For \textit{countriesOfOrigin} we only keep the 40 most frequent countries to reduce dimensionality. Given their nature, Naïve Bayes Classifiers don't require feature scaling or feature selection: they rely on probabilities rather than distances and are robust to irrelevant features.
 
 \subsubsection{Target: \textit{titleType}}
 Both models outperform the baseline, but the CategoricalNB model performs significantly better than the GaussianNB model (cf. Table \ref{tab:gnb_cnb_comparison_tts}).
@@ -162,7 +162,7 @@ Both models outperform the baseline, but the CategoricalNB model performs signif
 
 
 
-Analysing the \textbf{GaussianNB} model, we can immediately see that the classes with a higher support have better performances, with the most popular class, movie, scoring >0.80 in all metrics. As expected, the class it is mostly mistaken for, with 98 misclassificated records, is tvMovie. The contrary is also true, with the relatively small tvMovie class being classified as movie most of the time.
+Analysing the \textbf{GaussianNB} model, we can immediately see that the classes with a higher support have better performances, with the most popular class, movie, scoring >0.80 in all metrics. As expected, the class it is mostly mistaken for, with 98 misclassified records, is tvMovie. The contrary is also true, with the relatively small tvMovie class being classified as movie most of the time.
 The 2nd most popular class, tvEpisode, has a lower precision, at 0.70: its variable runtime leads to some misclassifications (mostly as movie, short or tvSeries).
 The 3rd most popular class, short, performs almost as well as movie while having less than half its support (P: 0.79, R: 0.78): as we've seen in clustering, this class separates itself from the others particularly well.
 As for the remaining underrepresented classes, they get often misclassified as more popular classes with which they share some similarities: tvShort is almost always classified as short (for its runtime); tvSpecial, tvSeries and tvMiniSeries have largely been classified as tvEpisode; videogame has a good precision (0.86) but was also mistaken for tvEpisode a significant amount of times; video, being a broad classification for a nonuniform set of titles, has been misclassified as different classes.
@@ -207,12 +207,12 @@ For the GaussianNB model, the confusion matrix (Figure \ref{fig:conf_matr_rating
 High and Medium-High are mostly confused among themselves, this is especially true for High, which has the lowest precision (0.251).
 
 The Categorical NB model's overall performance is better than the Gaussian's, but actually this is mostly due to the great improvement of the Low class (F1 went from 0.361 to 0.55): 2/3 of its records are now classified correctly, the misclassified ones are quite balanced among the three remaining classes. All other classes have has a slight decrease in macro F1.
-Medium-Low has had a decrease in recall for a slight improvement in precision; less records are classified correctly, but now it is mostly confused with Low.
+Medium-Low has had a decrease in recall for a slight improvement in precision; fewer records are classified correctly, but now it is mostly confused with Low.
 Medium-High and High both had an improvement in precision, at the cost of recall. The improvement in this model's scoring and ranking capability is better visualized by the PR curves in Figure \ref{fig:PRcurves_rating_NB.png}: the precision for Low and Medium-High is more stable across different thresholds.
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\columnwidth]{../results/images/conf_matr_rating_NB.png}
-    \caption{Confusion matrixes for GaussianNB and CategoricalNB for \textit{binned rating}.}
+    \caption{Confusion matrices for GaussianNB and CategoricalNB for \textit{binned rating}.}
     \label{fig:conf_matr_rating_NB.png}
 \end{figure}
 \begin{figure}[ht]
@@ -232,7 +232,7 @@ We build two models for each target variable, one using only numerical features 
   'min_samples_leaf': [1, 5, 10, 15, 20, 30, 50, 100],
   'criterion': ['gini', 'entropy']}
 \end{lstlisting}
-The random search is performed with 5-fold stratified cross-validation, repeated 5 times. Keeping the best hyperparameters found fixed, we then find the value of the \textit{ccp\_alpha} parameter that maximises the average macro F1 score of the validation sets in a 5-fold stratified cross-validation as a form of post-pruning.
+The random search is performed with 5-fold stratified cross-validation, repeated 5 times. Keeping the best hyperparameters found fixed, we then find the value of the \textit{ccp\_alpha} parameter that maximizes the average macro F1 score of the validation sets in a 5-fold stratified cross-validation as a form of post-pruning.
 
 \subsubsection{Target: \textit{titleType}}
 Both models not only outperform the baseline, but also both Naïve Bayes models. The DT using all features has better performances, especially in terms of macro F1 and PR AUC (cf. Table \ref{tab:dts_comparison_tts}): it is superior both at fixed thresholds and across the score distribution.
@@ -272,12 +272,12 @@ Both models not only outperform the baseline, but also both Naïve Bayes models.
     \label{tab:dts_comparison_tts}
 \end{table}
 
-Analysing the classification report and confusion matrix of the\textbf{ numeric-only DT}, we can see that the three most popular classes have the best scores (macro f1 >= 0.845), especially in terms of recall. Videogame, although having a lower support, performs similarly (macro f1 = 0.832), being barely misclassified. The \textbf{second model} shows an increase in performances, especially for the less popular classes, both in terms of PR curve and macro F1. The models has learnt to distinguish tvMiniSeries and tvSeries from the rest, with the latter having the 2nd highest macro F1 (0.940). The best performing class is now videogame (macro F1 = 0.945), which is classified correctly most of the time.
+Analyzing the classification report and confusion matrix of the\textbf{ numeric-only DT}, we can see that the three most popular classes have the best scores (macro f1 >= 0.845), especially in terms of recall. Videogame, although having a lower support, performs similarly (macro f1 = 0.832), being barely misclassified. The \textbf{second model} shows an increase in performances, especially for the less popular classes, both in terms of PR curve and macro F1. The models have learned to distinguish tvMiniSeries and tvSeries from the rest, with the latter having the 2nd highest macro F1 (0.940). The best performing class is now videogame (macro F1 = 0.945), which is classified correctly most of the time.
 Looking at their \textbf{feature importances}, both models rely on \textit{logRuntime}, but while the first one does so heavily (0.756), the second one less so (0.451). Unsurprisingly, the 2nd most important feature for the 2nd DT is \textit{canHaveEpisodes}, followed by the genre \textit{Short}.
 
-In fact, for both trees the first split is on \textit{logRuntime}<= 4.119 ($\approx$ 60.5 minutes): this already allows to separate all shorts, tvShort, and videogames.
-For the \textbf{numeric DT}, the second split on \textit{logRuntime}<= 3.068 ($\approx$20.5 minutes) separates medium-lenght tvMovies and movies of the left subtree, as well as all videogames (minus 1). On the right subtree, splitting the longer titles based on having more than an image separates among them most of the movies, tvEpisodes and tvMovies.
-For the \textbf{all-features DT} (Figure \ref{fig:dt_all_feats_tts.png}), in two more splits we get to a node in the right subtree wich will lead to a leaf: it's adult videos that are longer than an hour and released since 1991. On the left subtree, we get to a leaf contaning \textit{tvSeries}in 3 total splits as well: the are at most an hour long, have \textit{Short} as a genre, and can have episodes. It's also worth noting that all videogames (minus 1) are again isolated in just two splits: they are shorter than 61 minutes and are tagged as genre \textit{Short}.
+In fact, for both trees the first split is on \textit{logRuntime} $\leq$ 4.119 ($\approx$ 60.5 minutes): this already allows to separate all shorts, tvShort, and videogames.
+For the \textbf{numeric DT}, the second split on \textit{logRuntime} $\leq$ 3.068 ($\approx$20.5 minutes) separates medium-lenght tvMovies and movies of the left subtree, as well as all videogames (minus 1). On the right subtree, splitting the longer titles based on having more than an image separates among them most of the movies, tvEpisodes and tvMovies.
+For the \textbf{all-features DT} (Figure \ref{fig:dt_all_feats_tts.png}), in two more splits we get to a node in the right subtree which will lead to a leaf: it's adult videos that are longer than an hour and released since 1991. On the left subtree, we get to a leaf containing \textit{tvSeries} in 3 total splits as well: they are at most an hour long, have \textit{Short} as a genre, and can have episodes. It's also worth noting that all videogames (minus 1) are again isolated in just two splits: they are shorter than 61 minutes and are tagged as genre \textit{Short}.
 \begin{figure*}[ht]
     \centering
     \includegraphics[width=\textwidth]{../results/images/dt_all_feats_tts.png}
@@ -321,14 +321,14 @@ In this case, each model overall outperforms the baseline and its corresponding 
     \label{tab:dts_comparison_rating}
 \end{table}
 
-The most notable thing for the \textbf{numeric-only DT} is the increadibly low recall for class High (0.06), lower than the dummy classifier's (0.135): this class only had 2417 records in the training set, while all other had over 4500  – the model hasn't generalized on it, it only predicts it 3.21\% of the times when it represents 14.71\% of the test set.
+The most notable thing for the \textbf{numeric-only DT} is the incredibly low recall for class High (0.06), lower than the dummy classifier's (0.135): this class only had 2417 records in the training set, while all others had over 4500  – the model hasn't generalized on it, it only predicts it 3.21\% of the times when it represents 14.71\% of the test set.
 Medium-Low also has a lower recall (0.175), similar to the Gaussian NB's; it is mostly classified as Low and Medium-High.
 Low is the class with the best performances, and still it was correctly classified only around 65\% of the times. It is followed with similar, though slightly worse, performances by Medium-High, the most popular and most predicted class (around 43\% of predictions).
 The \textbf{all-features DT} shows a dramatic improvement for the lowest performing class, High, especially for its recall (0.180), which finally surpasses the benchmark. The model has started to generalize on it: it predicts it twice as many times, especially for itself and its closest class, Medium-High. Medium-Low has also seen a great improvement in recall (0.319). Nevertheless, both classes get misclassified most of the time.
 Low has suffered a small decrease in recall in return (0.603), but remains the best performing class.
 
 The 3 most important features for the numeric-only DT are \textit{logRuntime}, \textit{startYear} and \textit{numVotes} (0.41, 0.29, 0.14, respectively), whereas for the all-features DT they are \textit{tvEpisode}, \textit{startYear} and \textit{numVotes} (0.22, 0.14, 0.14, respectively): this is the only model where the runtime is not the most important feature.
-Looking at the first two levels of the DTs, we can see that the nodes are not very pure. For the numeric-only DT, the first split is on \textit{logRuntime}<= 60.5 minutes manages to separate a significant part of the Medium-High and High classes (they are shorter) on the left subtree. For the all-features DT (Figure \ref{fig:dt_all_feats_rating.png}), the first split is on \textit{tvEpisode}: the left subtree (not tvEpisode) separates the most part of the Low and Medium-Low classes, the subsequent split on movie further separates the High class: a large part of them are note tvEpisodes and are not movies.
+Looking at the first two levels of the DTs, we can see that the nodes are not very pure. For the numeric-only DT, the first split is on \textit{logRuntime} $\leq$ 60.5 minutes manages to separate a significant part of the Medium-High and High classes (they are shorter) on the left subtree. For the all-features DT (Figure \ref{fig:dt_all_feats_rating.png}), the first split is on \textit{tvEpisode}: the left subtree (not tvEpisode) separates the most part of the Low and Medium-Low classes, the subsequent split on movie further separates the High class: a large part of them are note tvEpisodes and are not movies.
 \begin{figure*}[ht]
     \centering
     \includegraphics[width=\textwidth]{../results/images/dt_all_feats_rating.png}

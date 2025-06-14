@@ -62,7 +62,7 @@ According to the model the three top features were \emph{criticReviewsRatio}, \e
 
 \subsection{Linear models}
 
-Since none of our numerical features showed any correlation with the mean rating we attepted to fit an ordinary least squares linear regressor using all numeric variables as input.
+Since none of our numerical features showed any correlation with the mean rating we attempted to fit an ordinary least squares linear regressor using all numeric variables as input.
 This model obtained a R2 score of 0 and a MSE of 1.83.
 
 For \textbf{numVotes}, we performed model selection among models using different combinations of input variables and regularization (since some of our input variables are correlated with each other we used Ridge regularization).
@@ -99,7 +99,7 @@ We then tested the best model, obtaining a R2 score of 0.55 and a MSE of 1.389.
 We were not able to fit any regressor that could predict the average rating of a title adequately.
 
 On the other hand, when using \emph{numVotes} as target variable we were able to obtain good results.
-As evidenced by the reported scores, non linear models performed much better than linear ones.
+As evidenced by the reported scores, non-linear models performed much better than linear ones.
 
 KNN performed slightly better than DT.
 Considering that this slight improvement comes at the cost of less interpretable results and greater computational cost at prediction time, DT is still the better model.

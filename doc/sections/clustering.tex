@@ -34,7 +34,7 @@ The resulting SSE and Silhouette score are 62588.082 and 0.189, respectively, wh
 
 The clusters' composition is reported in Table \ref{tab:clusters_kmeans}: in terms of population, we can distinguish Cluster 0 as the largest cluster, with almost 5000 records, followed by Cluster 2 with over 3000 records. The smallest cluster is Cluster 6, with only 950 records. The remaining clusters have between 1400 and 2000 records.
 
-The first thing that emerges from the parallel coordinates graph (Figure \ref{fig:centroids_kmeans.png}) is how Cluster 3 is well-separated from the others w.r.t half of the features: it has a particularly high value for \textit{numVotes}, \textit{totalImages}, \textit{totalCredits}, and \textit{numRegions}  – variables for which we had observed moderate correlation in Subsec. \ref{var_correlation_elimination} . Cluster 5 has a significantly higher value for \textit{criticReviewsRatio}: the algorithm might have isolated titles with greater critical appeal. Clusters 6 and 4 have the lowest runtime by far; Cluster 6, the smallest one, is also characterized by a low value for \textit{startYear} and \textit{totalCredits}: it probably contains the oldest and shortest titles. Clusters 0 and 2 appear to be the least-well separated from the others; they are indeed the biggest clusters.
+The first thing that emerges from the parallel coordinates graph (Figure \ref{fig:centroids_kmeans.png}) is how Cluster 3 is well-separated from the others w.r.t half of the features: it has a particularly high value for \textit{numVotes}, \textit{totalImages}, \textit{totalCredits}, and \textit{numRegions}  --– variables for which we had observed moderate correlation in Subsec. \ref{var_correlation_elimination}. Cluster 5 has a significantly higher value for \textit{criticReviewsRatio}: the algorithm might have isolated titles with greater critical appeal. Clusters 6 and 4 have the lowest runtime by far; Cluster 6, the smallest one, is also characterized by a low value for \textit{startYear} and \textit{totalCredits}: it probably contains the oldest and shortest titles. Clusters 0 and 2 appear to be the least-well separated from the others; they are indeed the biggest clusters.
 
 
 \begin{table}
@@ -98,7 +98,7 @@ In order to evaluate the results, we first used stratified bar charts to visuali
 We also analyzed the clusters' composition w.r.t. the numeric variables used by the algorithm, expanding the insights gained from the parallel coordinates plot.
 Interestingly, the two purest clusters w.r.t to \textit{numGenres} are the biggest: Cluster 0 mostly has one genre, with a minority of two genres, while Cluster 2 mostly has three genres, with a small proportion of two genres. The other clusters are more heterogeneous, having all three possible values.
 The line graph in Figure \ref{fig:startYear_kmeans.png} shows the distribution of the clusters w.r.t. \textit{startYear}: as hinted by its centroid, Cluster 6 contains the majority of records released before 1930s, and has no record released after 1983. On the other hand, Cluster 4 only has records released since 1963: the algorithm has therefore grouped older shorts in a cluster and newer shorts in another. Cluster 1, which also had a relatively low centroid, mostly contains records from the 1930s until the 1990s.
-Boxplots for the remaining variables also confirm the insights that were previously discussed. For \textit{runtimeMinutes}, Clusters 4 and 6 have the lowest median, at 12 minutes, as well as a short box, indicating low variability. Cluster 4 follows at 40 minutes, coherently with the lenght of a tvEpisode.
+Boxplots for the remaining variables also confirm the insights that were previously discussed. For \textit{runtimeMinutes}, Clusters 4 and 6 have the lowest median, at 12 minutes, as well as a short box, indicating low variability. Cluster 4 follows at 40 minutes, coherently with the length of a tvEpisode.
 \begin{figure}
     \includegraphics[width=\columnwidth]{../results/images/startYear_kmeans.png}
     \caption{Number of titles by year for relevant clusters for K-Means.}
@@ -107,7 +107,7 @@ Boxplots for the remaining variables also confirm the insights that were previou
 
 \subsubsection{Bisecting K-Means}
 We select k=7, the only significant local peak in the Silhouette plot (Figure \ref{fig:elbow_bkmeans.png}). All evaluation metrics are worse than the ones for K-Means, with a SSE equal to 67857.023, a Silhouette score equal to 0.128, and a correlation of -0.393. Again, we compared the SSE with the one of 500 randomly generated datasets to confirm its meaningfulness.
-The clusters' sizes are more homogeous than K-Means' (cf. Table \ref{tab:clusters_bkmeans}): Cluster 5 is the biggest with around 4000 records, followed by Cluster 4 with almost 3600 records. All other clusters range between around 1400 and 2300 records.
+The clusters' sizes are more homogeneous than K-Means' (cf. Table \ref{tab:clusters_bkmeans}): Cluster 5 is the biggest with around 4000 records, followed by Cluster 4 with almost 3600 records. All other clusters range between around 1400 and 2300 records.
 
 \begin{figure}
     \includegraphics[width=\columnwidth]{../results/images/elbow_bkmeans.png}
@@ -115,7 +115,7 @@ The clusters' sizes are more homogeous than K-Means' (cf. Table \ref{tab:cluster
     \label{fig:elbow_bkmeans.png}
 \end{figure}
 
-Analyzing the parallel coordinates plot in Figure \ref{fig:centroids_bkmeans.png}, we can see that similarly to before, there's a cluster, Cluster 2, that is well-separated from the others w.r.t. \textit{numvotes}, \textit{totalImages}, \textit{totalCredits} and \textit{numRegions}. In terms of these values, it is followed by Clusters 0 and 1. Moreover, there's once again a cluster, Cluster 1, with a particularly high value for \textit{criticReviewsRatio}.
+Analyzing the parallel coordinates plot in Figure \ref{fig:centroids_bkmeans.png}, we can see that similarly to before, there's a cluster, Cluster 2, that is well-separated from the others w.r.t. \textit{numVotes}, \textit{totalImages}, \textit{totalCredits} and \textit{numRegions}. In terms of these values, it is followed by Clusters 0 and 1. Moreover, there's once again a cluster, Cluster 1, with a particularly high value for \textit{criticReviewsRatio}.
 Differently from K-Means, there is one single cluster, Cluster 3, with a significantly lower value for both \textit{logRuntime} and \textit{totalCredits}. It also has the lowest value for \textit{startYear}, together with Cluster 6. Differently from before, it seems that the algorithm has created a single cluster for shorts, that probably contains also newer titles. Cluster 4 also has a relatively low value for \textit{logRuntime}; we expect it to contain tvEpisodes and the remaining shorts.
 \begin{figure}
     \includegraphics[width=\columnwidth]{../results/images/centroids_bkmeans.png}
@@ -125,7 +125,7 @@ Differently from K-Means, there is one single cluster, Cluster 3, with a signifi
 
 Like for K-Means, we visualized the distribution of the clusters against known categorical features. We find many similarities with the previous algorithm, but also some differences:
 \begin{itemize}
-    \item \textit{titleType} (cf. Figure \ref{fig:heatmap_titleType_bkmeans.png}): again, the distribution of shorts is what becomes immediately evident. Around half of them are to be found in Cluster 3, which also has a small proportion of tvEpisodes and is the only cluster with almost no movies. Cluster 4, the 2nd biggest cluster, is mostly made of tvEpisodes and a smaller, yet significant, proportion of shorts. The few tvShort recorded are also distributed among these two clusters. It's also worth noting that Cluster 6 contains the biggest number of movies, although being only the 3rd most popular, and that Cluster 2 is the only cluster with almost no tvEpisodes. Cluster 5, the biggest, contains the largest part of the remaning title types (except for videogame, which are mostly in Cluster 4).
+    \item \textit{titleType} (cf. Figure \ref{fig:heatmap_titleType_bkmeans.png}): again, the distribution of shorts is what becomes immediately evident. Around half of them are to be found in Cluster 3, which also has a small proportion of tvEpisodes and is the only cluster with almost no movies. Cluster 4, the 2nd biggest cluster, is mostly made of tvEpisodes and a smaller, yet significant, proportion of shorts. The few tvShort recorded are also distributed among these two clusters. It's also worth noting that Cluster 6 contains the biggest number of movies, although being only the 3rd most popular, and that Cluster 2 is the only cluster with almost no tvEpisodes. Cluster 5, the biggest, contains the largest part of the remaining title types (except for videogame, which are mostly in Cluster 4).
     \item Boolean variables: again, the cluster whose centroid had the highest value for \textit{numvotes}, \textit{totalImages}, \textit{totalCredits} and \textit{numRegions}, Cluster 2, also has the highest proportion of True values for \textit{hasVideos} and \textit{awardsAndNominations}, at around 50\%. The biggest cluster has the most True values for \textit{canHaveEpisodes} because it contains most of the series. Cluster 6 has almost no True values for \textit{hasVideos}, probably because it contains older titles.
 \end{itemize}
 \begin{figure}
@@ -173,7 +173,7 @@ The only notable trend found in the analysis of this clustering is that titles a
 
 \subsection{Hierarchical Clustering}
 In analyzing the dataset using agglomerative hierarchical clustering we initially entertained the idea of using a precomputed distance matrix in order to include categorical attributes.
-However we ultimately decided against this and used only the numeric features with euclidean distance in order to obtain results that are comparable with those obtained with centroid based methods, be able to use Ward's method for determining inter-cluster distances and escape the curse of dimensionality.
+However, we ultimately decided against this and used only the numeric features with euclidean distance in order to obtain results that are comparable with those obtained with centroid based methods, be able to use Ward's method for determining inter-cluster distances and escape the curse of dimensionality.
 This also enabled us to check if clusters computed on the basis of numerical features were able to capture information vehicolated by categorical features.
 
 We performed clustering using all linkage  criteria made available from the scikit learn library (single linkage, average linkage, complete linkage and Ward's method), visualized the dendrogram (figg. \ref{fig:dendrogram_single_link}-\ref{fig:dendrogram_ward}) for each clustering and selected an appropriate threshold value for further analysis.
@@ -209,7 +209,7 @@ This is an expected result, since single linkage performs poorly with noisy data
 \textbf{Group average} performed slightly better (fig \ref{fig:dendrogram_avg_link}), but produced a very unbalanced clustering: setting the threshold at 4.7 we obtained 5 clusters, with one single cluster (Cluster 5) containing 98\% of the records, as can be seen in fig \ref{fig:hier_clustering}. We obtained a Silhouette score of 0.206.
 
 \textbf{Complete linkage} also demonstrated the \emph{rich get richer} tendency of agglomerative clustering, producing clusters of variable size.
-We cut the dendrogram (fig. \ref{fig:dendrogram_complete_link}) at 7.5, obtaining 10 clusters with two major cluster containing more than 70\% of all records and several smaller clusters, six of which having less than 1,000 members. We obtained a Silhouette score of 0.056.
+We cut the dendrogram (fig. \ref{fig:dendrogram_complete_link}) at 7.5, obtaining 10 clusters with two major clusters containing more than 70\% of all records and several smaller clusters, six of which having less than 1,000 members. We obtained a Silhouette score of 0.056.
 
 \begin{figure}
     \includegraphics[width=\columnwidth]{../results/images/tsne_hier_clust.png}
@@ -220,9 +220,9 @@ We cut the dendrogram (fig. \ref{fig:dendrogram_complete_link}) at 7.5, obtainin
 \textbf{Ward's method} obtained the most balanced clustering. We cut the dendrogramm (fig. \ref{fig:dendrogram_ward}) at 100, obtaining 5 clusters and a Silhouette score of 0.157.
 
 
-We then evaluated the clusterings obtained with complete linkage and Ward's method with respect to the distribution of of categorical features.
+We then evaluated the clusterings obtained with complete linkage and Ward's method with respect to the distribution of categorical features.
 
-We found out that both Ward and complete linkage were able to create clusters containing mainly shorts: Ward's Cluster 1 captures 76\% of shorts and 85\% of tv shorts of the whole dataset and 80\% of it members are shorts or tv shorts; for complete linkage, Clusters 5 and 6 capture, in between them, 69\% of the total shorts and 87\% of tv shorts and are themselves fairly pure with respect to title type (78\% of members of Cluster 5 and 94\% of members of Cluster 6 are shorts or tv shorts).
+We found out that both Ward and complete linkage were able to create clusters containing mainly shorts: Ward's Cluster 1 captures 76\% of shorts and 85\% of TV shorts of the whole dataset and 80\% of its members are shorts or TV shorts; for complete linkage, Clusters 5 and 6 capture, in between them, 69\% of the total shorts and 87\% of TV shorts and are themselves fairly pure with respect to title type (78\% of members of Cluster 5 and 94\% of members of Cluster 6 are shorts or TV shorts).
 Figure \ref{fig:hier_clustering} shows notable overlap between the shorts clusters obtained by these two methods.
 
 \begin{figure}
@@ -232,8 +232,8 @@ Figure \ref{fig:hier_clustering} shows notable overlap between the shorts cluste
 \end{figure}
 
 In fig \ref{fig:hier_clustering_shorts} we show the results of clustering with complete linkage by year of release and runtime.
-Here we can see that Cluster 4 (which is the most numerous), containing mainly movies and tv episodes is cleanly separated from the two shorts clusters by means of runtime.
-We can also see that the two clusters of shorts detected by the algorithm differ for date of release: Cluster 6 contains older shorts, while Cluster 5 contains shorts that were realeased from the 60s onwards.
+Here we can see that Cluster 4 (which is the most numerous), containing mainly movies and TV episodes is cleanly separated from the two shorts clusters by means of runtime.
+We can also see that the two clusters of shorts detected by the algorithm differ for date of release: Cluster 6 contains older shorts, while Cluster 5 contains shorts that were released from the 60s onwards.
 From the dendrogram in fig. \ref{fig:dendrogram_complete_link}, we can see that, had we selected a higher threshold for splitting the dendrogram, these two clusters would be merged together.
 
 \begin{figure*}
@@ -243,7 +243,7 @@ From the dendrogram in fig. \ref{fig:dendrogram_complete_link}, we can see that,
 \end{figure*}
 
 Some of the smallest clusters obtained with complete linkage also proved interesting.
-In fig. \ref{fig:hier_clustering_awards} we can see that Cluster 1 and 2 (that contain mainly movies and some tv series and are merged at a higher threshold) contain titles that are on average more popular that all other titles in the dataset (they have a higher number of votes), but the ones in Cluster 1 are the most popular: this cluster contains blockbusters like \emph{Harry Potter and the Deathly Hallows -- Part 2}, \emph{Il buono, il brutto, il cattivo} and \emph{Full metal jacket}, just to name a few, as well as very popular TV series like \emph{The Witcher} and \emph{Euphoria}.
+In fig. \ref{fig:hier_clustering_awards} we can see that Cluster 1 and 2 (that contain mainly movies and some TV series and are merged at a higher threshold) contain titles that are on average more popular that all other titles in the dataset (they have a higher number of votes), but the ones in Cluster 1 are the most popular: this cluster contains blockbusters like \emph{Harry Potter and the Deathly Hallows -- Part 2}, \emph{Il buono, il brutto, il cattivo} and \emph{Full metal jacket}, just to name a few, as well as very popular TV series like \emph{The Witcher} and \emph{Euphoria}.
 
 Moreover, almost all (96\%) records from cluster 1 received awards or nominations and almost all of them (94\%) have attached videos on their IMDB page.
 Of the slightly less popular records from Cluster 2, 65\% received awards or nominations, while 72\% have videos on their IMDB page, while the values for the entire database are much lower (respectively 17\% and 10\%).
