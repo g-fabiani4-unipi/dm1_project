@@ -1,4 +1,22 @@
 %ADD INTRO TO CLASSIFICATION
+In this section we examine the performance of various classification methods with respect to two multiclass classification tasks.
+
+Since we noticed promising trends in the cluster analysis, we chose \emph{titleType} as target variable for the first task.
+
+In the second task we attempted to predict the rating of a title.
+Since we wanted to avoid having a great number of classes with very low support, we binned the rating values in four categories, each containing approximately the same number of records, as follows:
+\begin{description}
+    \item[Low] rating rating lower than 6
+    \item[Medium-Low] rating between 6 and 7
+    \item[Medium-High]  rating between 7 and 8
+    \item[High] rating 8 or higher
+\end{description}
+
+For this second task we expected overall worse results, because none of our features showed high correlation with rating and we also saw that our records didn't cluster by rating in any significant way.
+
+In evaluating our models, we considered not only the accuracy score, but also the macro average of F1 scores obtained for each class.
+Since the classes for the first have variable support, we reasoned that this second metric would be a better indicator of the overall performance of the models.
+
 % two target variables → detail binned rating
 % log_runtime for all models for fair comparison
 % knn: only numeric, NB and DT: both numeric and all feats
@@ -6,55 +24,112 @@
 % dummy classifier benchmarks for the two target variables
 
 
-\begin{table}[h]
-    \centering
-    \small
-    \setlength{\tabcolsep}{4pt}
-    \renewcommand{\arraystretch}{0.9}
-    \begin{tabular}{lcccc}
-        \hline
-        & \textbf{precision} & \textbf{recall} & \textbf{f1-score} & \textbf{support} \\
-        \hline
-        movie & 0.353 & 0.331 & 0.341 & 1877 \\
-        short & 0.162 & 0.183 & 0.172 & 766 \\
-        tvEpisode & 0.275 & 0.282 & 0.278 & 1599 \\
-        tvMiniSeries & 0.027 & 0.025 & 0.026 & 81 \\
-        tvMovie & 0.059 & 0.057 & 0.058 & 299 \\
-        tvSeries & 0.076 & 0.081 & 0.078 & 447 \\
-        tvShort & 0.000 & 0.000 & 0.000 & 16 \\
-        tvSpecial & 0.016 & 0.020 & 0.018 & 49 \\
-        video & 0.035 & 0.032 & 0.033 & 250 \\
-        videoGame & 0.013 & 0.011 & 0.012 & 94 \\
-        \hline
-        accuracy & & & \textbf{0.233} & 5478 \\
-        macro avg & 0.102 & 0.102 & \textbf{0.102} & 5478 \\
-        \hline
-    \end{tabular}
-    \caption{Classification report for the Dummy Classifier on \textit{titleType}.}
-    \label{tab:class_report_dummy_titleType}
-\end{table}
+% \begin{table}[h]
+%     \centering
+%     \small
+%     \setlength{\tabcolsep}{4pt}
+%     \renewcommand{\arraystretch}{0.9}
+%     \begin{tabular}{lcccc}
+%         \hline
+%         & \textbf{precision} & \textbf{recall} & \textbf{f1-score} & \textbf{support} \\
+%         \hline
+%         movie & 0.353 & 0.331 & 0.341 & 1877 \\
+%         short & 0.162 & 0.183 & 0.172 & 766 \\
+%         tvEpisode & 0.275 & 0.282 & 0.278 & 1599 \\
+%         tvMiniSeries & 0.027 & 0.025 & 0.026 & 81 \\
+%         tvMovie & 0.059 & 0.057 & 0.058 & 299 \\
+%         tvSeries & 0.076 & 0.081 & 0.078 & 447 \\
+%         tvShort & 0.000 & 0.000 & 0.000 & 16 \\
+%         tvSpecial & 0.016 & 0.020 & 0.018 & 49 \\
+%         video & 0.035 & 0.032 & 0.033 & 250 \\
+%         videoGame & 0.013 & 0.011 & 0.012 & 94 \\
+%         \hline
+%         accuracy & & & \textbf{0.233} & 5478 \\
+%         macro avg & 0.102 & 0.102 & \textbf{0.102} & 5478 \\
+%         \hline
+%     \end{tabular}
+%     \caption{Classification report for the Dummy Classifier on \textit{titleType}.}
+%     \label{tab:class_report_dummy_titleType}
+% \end{table}
 
-\begin{table}[h]
-    \centering
-    \small
-    \setlength{\tabcolsep}{3pt}
-    \renewcommand{\arraystretch}{0.9}
-    \begin{tabular}{p{2.1cm}cccc}
-        \hline
-        & \textbf{precision} & \textbf{recall} & \textbf{f1-score} & \textbf{support} \\
-        \hline
-        Low & 0.277 & 0.268 & 0.273 & 1542 \\
-        Medium-low & 0.267 & 0.275 & 0.271 & 1522 \\
-        Medium-high & 0.305 & 0.312 & 0.309 & 1608 \\
-        High & 0.141 & 0.135 & 0.138 & 806 \\
-        \hline
-        accuracy & & & \textbf{0.264} & 5478 \\
-        macro avg & 0.248 & 0.248 & \textbf{0.248} & 5478 \\
-        \hline
-    \end{tabular}
-    \caption{Classification report for the Dummy Classifier on \textit{binned rating}.}
-    \label{tab:class_report_dummy_binned_rating}
-\end{table}
+% \begin{table}[h]
+%     \centering
+%     \small
+%     \setlength{\tabcolsep}{3pt}
+%     \renewcommand{\arraystretch}{0.9}
+%     \begin{tabular}{p{2.1cm}cccc}
+%         \hline
+%         & \textbf{precision} & \textbf{recall} & \textbf{f1-score} & \textbf{support} \\
+%         \hline
+%         Low & 0.277 & 0.268 & 0.273 & 1542 \\
+%         Medium-low & 0.267 & 0.275 & 0.271 & 1522 \\
+%         Medium-high & 0.305 & 0.312 & 0.309 & 1608 \\
+%         High & 0.141 & 0.135 & 0.138 & 806 \\
+%         \hline
+%         accuracy & & & \textbf{0.264} & 5478 \\
+%         macro avg & 0.248 & 0.248 & \textbf{0.248} & 5478 \\
+%         \hline
+%     \end{tabular}
+%     \caption{Classification report for the Dummy Classifier on \textit{binned rating}.}
+%     \label{tab:class_report_dummy_binned_rating}
+% \end{table}
+
+\subsection{K-Nearest Neighbor Classifier}
+For each target feature we trained the knn classifier on all numerical features (log transformed if necessary) which were normalized using a standard scaler.
+
+In both cases we performed grid search in order to find the optimal configuration of hyperparamenters: we tested different values of \emph{k} between 2 and 500, two different distance functions (manhattan and euclidean) and wheter to weight exemplars by distance.
+We evaluated the performance of each configuration of hyperparameters performing a 5-fold stratified cross validation on the training set and checking the mean accuracy.
+In order to limit the time used on this task, we performed the search in two steps, as illustrated by figg. \ref{fig:knn_grid} and \ref{fig:knn_grid_mini}:
+
+\begin{enumerate}
+    \item We performed grid search with values of \emph{k} between 2 and 500 using a step of 5;
+    \item After visually inspecting the trend of the mean accuracy on our first grid search by means of a lineplot, we refined our search for \emph{k} to a restricted range, this time using a step of 1.
+\end{enumerate}
+
+\begin{figure}
+    \includegraphics[width=\columnwidth]{../results/images/knn_grid.png}
+    \caption{Accuracy of knn models evaluated during grid search (target: titleType).}
+    \label{fig:knn_grid}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width=\columnwidth]{../results/images/knn_grid_mini.png}
+    \caption{The search is refined to a limited range of k (target: titleType).}
+    \label{fig:knn_grid_mini}
+\end{figure}
+
+\subsubsection{Target: \emph{titleType}}
+We fitted and tested the classifier with the following configuration of parameters:
+\begin{itemize}
+    \item distance function: Manhattan
+    \item weight: distance
+    \item k: 20 (as can be seen in fig. \ref{fig:knn_grid_mini} \emph{k}=14 obtained the highest mean accuracy score, but we preferred 20 because of the lower standard deviation).
+\end{itemize}
+
+This model obtained an accuracy of 0.78 and a macro F1 score of 0.42 on the test set, well exceeding the performance of the dummy classifier.
+
+\begin{figure}
+    \includegraphics[width=\columnwidth]{../results/images/conf_mat_knn_tt.png}
+    \caption{Confusion matrix for KNN for \emph{titleType}}
+    \label{fig:knn_conf_mat_tt}
+\end{figure}
+
+In particular, as can be seen from the confusion matrix in figure \ref{fig:conf_matr_rating_NB.png}, the model has little troble identifying the three classes with higher support (movies, shorts and TV episodes have all F1 scores higher than 0.84) and is able to correctly detect tvSeries around half of the time.
+We can also see that tv movies, miniseries and videos are most frequently misclassified as movies, while tv shorts are almost always classified as shorts.
+TV specials are sometimes misclassified as tv episodes (especially if shorter) and sometimes as movies (especially if longer).
+
+\subsubsection{Target: \emph{binned rating}}
+We fitted and tested the classifier with the following configuration of parameters:
+\begin{itemize}
+    \item distance function Manthattan
+    \item weight: distance
+    \item k: 95
+\end{itemize}
+
+This model obtained an accuracy of .44 and a macro F1 score of .34, exceeding the performance of the baseline in both metrics.
+Overall the performance on this target variable was less satifactory, as expected.
+
+The inspection of the confusion matrix revealed confusion among all classes (not only adiacent classes), with only \emph{low} and \emph{medium high} obtaining a F1 score greater than .50. The worst performing class was \emph{high}, with an especially bad recall (0.14): more than half of the time titles with a high score were misclassified as \emph{medium high}, with the rest of the cases distributed seemingly at random in the remaining classes.
 
 \subsection{Naïve Bayes Classifier}
 \label{naive_bayes}
