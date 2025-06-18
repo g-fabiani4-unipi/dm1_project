@@ -1,0 +1,1 @@
+{"rule":"IT_VBZ","sentence":"^\\QSince we'd already implemented pre-pruning, we favored the macro F1 score rather than the accuracy because it lead to a more conservative pos\\E$"}
