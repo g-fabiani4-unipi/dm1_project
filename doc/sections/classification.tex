@@ -170,14 +170,14 @@ As for the remaining underrepresented classes, they get often misclassified as m
 Moving onto the \textbf{CategoricalNB} model, the performance for almost all classes improves, with all three most popular classes now scoring >0.80 in all metrics.
 tvMiniSeries and tvSeries show the most dramatic improvement, with the latter scoring the highest precision (0.921) and F1 (0.904). They are now both correctly classified most of the time, and the model has managed to distinguish them from tvEpisode: they now only get misclassified as each other (42\% of the time for tvMiniSeries, only 9\% for tvSeries). The two PR curves in Figure \ref{fig:GaussianNB_PRcurve_tts.png} and \ref{fig:CatNB_PRcurve_tts.png} show this improvement, as well as the decrease in performance for videogame, which has gained recall at the cost of precision.
 
-\begin{figure}[ht]
+\begin{figure}
     \centering
     \includegraphics[width=0.9\columnwidth]{../results/images/GaussianNB_PRcurve_tts.png}
     \caption{PR curves (1-vs-rest) for GaussianNB.}
     \label{fig:GaussianNB_PRcurve_tts.png}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}
     \centering
     \includegraphics[width=0.9\columnwidth]{../results/images/CatNB_PRcurve_tts.png}
     \caption{PR curves (1-vs-rest) for CategoricalNB.}
@@ -209,13 +209,13 @@ High and Medium-High are mostly confused among themselves, this is especially tr
 The Categorical NB model's overall performance is better than the Gaussian's, but actually this is mostly due to the great improvement of the Low class (F1 went from 0.361 to 0.55): 2/3 of its records are now classified correctly, the misclassified ones are quite balanced among the three remaining classes. All other classes have has a slight decrease in macro F1.
 Medium-Low has had a decrease in recall for a slight improvement in precision; fewer records are classified correctly, but now it is mostly confused with Low.
 Medium-High and High both had an improvement in precision, at the cost of recall. The improvement in this model's scoring and ranking capability is better visualized by the PR curves in Figure \ref{fig:PRcurves_rating_NB.png}: the precision for Low and Medium-High is more stable across different thresholds.
-\begin{figure}[ht]
+\begin{figure}
     \centering
     \includegraphics[width=\columnwidth]{../results/images/conf_matr_rating_NB.png}
     \caption{Confusion matrices for GaussianNB and CategoricalNB for \textit{binned rating}.}
     \label{fig:conf_matr_rating_NB.png}
 \end{figure}
-\begin{figure}[ht]
+\begin{figure}
     \centering
     \includegraphics[width=\columnwidth]{../results/images/PRcurves_rating_NB.png}
     \caption{PR curves for GaussianNB and CategoricalNB for \textit{binned rating}.}
