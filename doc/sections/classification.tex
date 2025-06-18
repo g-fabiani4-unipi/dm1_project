@@ -144,7 +144,7 @@ For each target variable, we built two models: a GaussianNB model using only num
 
 \subsubsection{Target: \emph{titleType}}
 Both models outperform the dummy classifier, but CNB performs significantly better: in fact, GNB has a significantly lower accuracy than KNN, whereas CNB has a comparable accuracy and a significantly higher macro F1 (cf. Table \ref{tab:gnb_cnb_comparison_tts}).
-\begin{table}[ht]
+\begin{table}
     \centering
     \small
     %\setlength{\tabcolsep}{3pt}
@@ -161,12 +161,12 @@ Both models outperform the dummy classifier, but CNB performs significantly bett
     \label{tab:gnb_cnb_comparison_tts}
 \end{table}
 
-Analyzing the \textbf{GaussianNB} model, we can immediately see that, similarly as for KNN, the classes with a higher support yield better performances (F1 > 0.74, with movie achieving >0.80 for all metrics). 
+Analyzing the \textbf{GaussianNB} model, we can immediately see that, similarly as for KNN, the classes with a higher support yield better performances (F1 > 0.74, with movie achieving >0.80 for all metrics).
 The 3rd most popular class, short, performs almost as well as movie while having less than half its support (P: 0.79, R: 0.78): as we've seen in clustering, this class separates itself from the others particularly well.
 As for the remaining underrepresented classes, they get often misclassified as more popular classes with which they share some similarities: tvMovie and tvShort are almost always classified as movie and short, respectively; tvSpecial, tvSeries and tvMiniSeries have largely been classified as tvEpisode; videogame has a good precision (0.86) but was also mistaken for tvEpisode a significant amount of times.
 
 Moving onto the \textbf{CategoricalNB} model, the performance for almost all classes improves, with all three most popular classes now scoring >0.80 in all metrics. The biggest advantage w.r.t KNN is the improvement in performances for lower-support classes: tvMiniSeries and tvSeries are now correctly classified most of the time, and the model confuses them almost exclusively for each other (cf. the confusion matrix in Fig. \ref{fig:conf_mat_CNB_tts.png}). The latter scores the highest precision (0.921) and F1 (0.904). tvSpecial also improves (F1: 0.26, vs KNN: 0.03 and GNB: 0.11), though there remains significant confusion w.r.t. other classes with higher support.
-\begin{figure}[ht]
+\begin{figure}
     \centering
     \includegraphics[width=\columnwidth]{../results/images/conf_mat_CNB_tts.png}
     \caption{Confusion matrix for CNB for \textit{titleType}.}
@@ -175,14 +175,14 @@ Moving onto the \textbf{CategoricalNB} model, the performance for almost all cla
 
 The two PR curves in Fig. \ref{fig:GaussianNB_PRcurve_tts.png} and \ref{fig:CatNB_PRcurve_tts.png} show this improvement, as well as the drop in performance for videogame w.r.t GNB: it exhibits a noticeably poorer balance between precision and recall.
 
-\begin{figure}[ht]
+\begin{figure}
     \centering
     \includegraphics[width=0.9\columnwidth]{../results/images/GaussianNB_PRcurve_tts.png}
     \caption{PR curves (1-vs-rest) for GaussianNB.}
     \label{fig:GaussianNB_PRcurve_tts.png}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}
     \centering
     \includegraphics[width=0.9\columnwidth]{../results/images/CatNB_PRcurve_tts.png}
     \caption{PR curves (1-vs-rest) for CategoricalNB.}
@@ -190,9 +190,9 @@ The two PR curves in Fig. \ref{fig:GaussianNB_PRcurve_tts.png} and \ref{fig:CatN
 \end{figure}
 
 \subsubsection{Target: \emph{binned rating}}
-On this task, the performance of the two models was less satisfactory, especially for GNB  (cf. Table \ref{tab:gnb_cnb_comparison_rating}). 
+On this task, the performance of the two models was less satisfactory, especially for GNB  (cf. Table \ref{tab:gnb_cnb_comparison_rating}).
 
-\begin{table}[ht]
+\begin{table}
     \centering
     \small
     %\setlength{\tabcolsep}{3pt}
@@ -209,7 +209,7 @@ On this task, the performance of the two models was less satisfactory, especiall
     \label{tab:gnb_cnb_comparison_rating}
 \end{table}
 
-The \textbf{Categorical NB} model yielded very similar results to KNN, with the exception that Medium-Low was the lowest performing class (Recall: 0.15, F1: 0.22): it was correctly classified only 15\%, while being classified as Low and Medium-High 44\% and 29\% of the times, respectively.  
+The \textbf{Categorical NB} model yielded very similar results to KNN, with the exception that Medium-Low was the lowest performing class (Recall: 0.15, F1: 0.22): it was correctly classified only 15\%, while being classified as Low and Medium-High 44\% and 29\% of the times, respectively.
 
 For the \textbf{GaussianNB} model, there's confusion among all classes, in particular w.r.t Medium-High, the most popular and best performing class (F1: 0.43). In fact, instances from all classes are predominantly classified as Medium-High. The only exception is the Low class, which still shows a substantial rate of misclassification: 29\% of its records are misclassified as Medium-High, vs 33.5\% of correct classifications.
 
@@ -220,7 +220,7 @@ The difference tin the two NB models' scoring and ranking capability is better v
 %    \caption{Confusion matrices for GaussianNB and CategoricalNB for \textit{binned rating}.}
 %    \label{fig:conf_matr_rating_NB.png}
 %\end{figure}
-\begin{figure}[ht]
+\begin{figure}
     \centering
     \includegraphics[width=\columnwidth]{../results/images/PRcurves_rating_NB.png}
     \caption{PR curves for GaussianNB and CategoricalNB for \textit{binned rating}.}
@@ -258,7 +258,7 @@ The random search was performed with 5-fold stratified cross-validation, repeate
 \subsubsection{Target: \emph{titleType}}
 The DT outperformed all previous models, both in terms of accuracy and macro F1, as well as in terms of PR-AUC (cf. Table \ref{tab:dts_comparison_tts}). Similarly to the other models, the DT does not struggle with the three most popular classes (F1 > 0.85), but moreover shows a significant improvement for the lower support classes (cf. the confusion matrix in Fig. \ref{fig:conf_mat_DT_tts.png}). In fact, the best performing class is videogame (F1 = 0.95, vs KNN = 0.44 and CNB = 0.58), which is classified correctly most of the time. Following the precedent set by the CNB, it also has learned to distinguish tvMiniSeries and tvSeries from the rest, with the latter having the 2nd highest macro F1 (0.94): they now both only get misclassified as each other. tvSpecial (F1 = 0.42, vs KNN=0.03 and CNB = 0.26) is mostly confused between itself and tvEpisode.
 
-\begin{table}[ht]
+\begin{table}
     \centering
     \small
     %\setlength{\tabcolsep}{3pt}
@@ -274,7 +274,7 @@ The DT outperformed all previous models, both in terms of accuracy and macro F1,
     \caption{Performance of DTs on \textit{titleType} and \textit{binned rating}.}
     \label{tab:dts_comparison_tts}
 \end{table}
-\begin{figure}[ht]
+\begin{figure}
     \centering
     \includegraphics[width=\columnwidth]{../results/images/conf_mat_DT_tts.png}
     \caption{Confusion matrix for DT for \textit{titleType}.}
@@ -283,7 +283,7 @@ The DT outperformed all previous models, both in terms of accuracy and macro F1,
 Unsurprisingly, the most important features are \textit{logRuntime} (0.45), \textit{canHaveEpisodes} (0.18) and the genre \textit{Short} (0.17).
 The first split on \textit{logRuntime} $\leq$ 4.119 ($\approx$ 60.5 minutes) already allows to separate all shorts, tvShort, and videogames in the left subtree.
 In two more splits, we get to a node in the right subtree which will lead to a leaf: it's adult videos that are longer than an hour and released since 1991. On the left subtree, we get to a leaf containing \textit{tvSeries} in three total splits: they are at most an hour long, have \textit{Short} as a genre, and can have episodes. It's also worth noting that all (except one) videogames are at most an hour long and are not tagged as genre \textit{Short}.
-\begin{figure*}[ht]
+\begin{figure*}
     \centering
     \includegraphics[width=\textwidth]{../results/images/dt_all_feats_tts.png}
     \caption{DT classifier for \textit{titleType}, cut at depth 2 (left= True, right= False).}
@@ -295,7 +295,7 @@ The model's performance is comparable to that of the KNN and CNB models (cf. Tab
 
 The three most important features are \textit{tvEpisode} (0.22), \textit{startYear} (0.14) and \textit{numVotes} (0.14).
 Looking at the first two levels of the DT (Fig. \ref{fig:dt_all_feats_rating.png}), it is evident that the nodes are not very pure. The first split isolates the most part of the Low and Medium-Low classes in the non-tvEpisode subtree (91\% and 77.6\%, respectively): this likely explains why Low is the best performing class. The subsequent split on movie further separates the High class: around 43\% of all High rated records are neither tvEpisodes, nor movies.
-\begin{figure*}[ht]
+\begin{figure*}
     \centering
     \includegraphics[width=\textwidth]{../results/images/dt_all_feats_rating.png}
     \caption{DT classifier for \textit{binned rating}, cut at depth 2 (left= True, right= False).}

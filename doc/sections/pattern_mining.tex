@@ -41,7 +41,7 @@ We kept the minimum number of items in the itemsets (\textit{zmin}) fixed to two
 
 After testing different \textit{minsup} values, we chose 30\%, as we got some interesting maximal itemsets, rather than just a combination of the most frequent values for the different features. At this threshold, the frequent itemsets are 174 and they are all closed, while the maximal itemsets are only 26. In Table \ref{tab:maximal_itemsets} are reported some of the most interesting maximal itemsets, among the top 10 with the highest support.
 The first one captures a dependency we expect: a movie doesn't have episodes. This is similarly captured by the 7th, as the reported runtime is typical of movies and tv episodes. The 4th one represents many foreign titles, made in just one foreign country, while the 6th captures dramatic stand-alone titles from a single country: it can well describe telenovela episodes, or lower budget dramatic movies (as they are made in a single country).
-\begin{table}[ht]
+\begin{table}
 \small
 %\setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{0.9}
@@ -82,7 +82,7 @@ The total number of rules extracted is 16466. The histograms in Fig. \ref{fig:ru
 
 The 30 rules with the highest lift all contain a \textit{titleType} either in the antecedent or consequent; a selection is reported in Table \ref{tab:top_association_rules}. In particular, the two top rules have captured the fact that tvSeries have episodes, while the rest have captured the redundancy of the information about shorts, present in both \textit{genres} and \textit{titleType}. In particular, rules having \textit{short\_titleType} as consequent are all associated with both \textit{genre\_Short} and the lowest value for \textit{runtimeMinutes}, [0, 29].
 
-\begin{table}[ht]
+\begin{table}
     \small  % Shrinks font size for table
     \setlength{\tabcolsep}{3pt}  % Reduces column padding
     %\renewcommand{\arraystretch}{0}  % Reduces row height
@@ -110,7 +110,7 @@ The 30 rules with the highest lift all contain a \textit{titleType} either in th
 Out of the extracted rules, 245 have a \textit{titleType} in the consequent: 144 have short, 89 have tvEpisode, 10 have movie, and two have tvSeries.
 For each of these four \textit{titleType} classes, we implement the rule with the highest support for a task of multiclass classification, for the sake of which the remaining classes are aggregated to 'other'. We favor the rules with the highest support because they are more general and include the most important items in the antecedent; nevertheless, we make sure that their lift is higher than 1. The selected rules are reported in Table \ref{tab:association_rules_titleType}.
 
-\begin{table}[ht]
+\begin{table}
     \small  % Shrinks font size for table
     \setlength{\tabcolsep}{4pt}  % Reduces column padding
     \renewcommand{\arraystretch}{1}  % Reduces row height
@@ -132,7 +132,7 @@ For each of these four \textit{titleType} classes, we implement the rule with th
     \label{tab:association_rules_titleType}
 \end{table}
 The performance of our simple rule-based classifier on the test set is reported in Table \ref{tab:class_report_rules}. It achieves an accuracy of 60\% and a macro F1 score of 67.5\%, outperforming our baseline model, a stratified dummy classifier trained on the training set, across all metrics for all classes (accuracy: 0.25, macro F1: 0.20).
-\begin{table}[h]
+\begin{table}
     \centering
     \small
     \setlength{\tabcolsep}{4pt}  % Reduces column padding

@@ -1,12 +1,13 @@
 \subsection{Centroid-based Clustering}
+For all clustering algorithms we used all numeric features (cf. Table \ref{tab:dataset_numeric}), log-transformed if necessary as detailed in Subsec. \ref{numeric_vars_analysis}, normalized using StandardScaler.
+
 \label{centroid_clustering}
 In analyzing the dataset using centroid-based methods, we experimented with two different algorithms, K-Means and Bisecting K-Means.
 For each experiment, we followed the same steps:
 \begin{enumerate}
-    \item Choosing the attributes and scaling the dataset: we used all numeric features (cf. Table \ref{tab:dataset_numeric}), log-transformed if necessary as detailed in Subsec. \ref{numeric_vars_analysis}, and scaled the values using StandardScaler. %TO JUSTIFY STANDARDSCALER IN THE SUBSECTION INTRO, SINCE WE USED IT FOR ALL ALGORITHMS.
     \item Selecting the best value for \textit{k}: we used both the Elbow method and the Silhouette method as heuristics to determine the appropriate number of clusters. To do so, we iteratively run the algorithm for \textit{k} in the range [2,50], plotting the SSE and Silhouette score for each \textit{k} and comparing the two curves to find the best trade-off.
     \item Fitting the algorithm and evaluating the resulting clustering in terms of cohesion and separation by calculating the SSE, Silhouette score, and correlation between the distance matrix of the dataset and the ideal similarity matrix.
-    \item Visual cluster exploration: cluster visualization through PCA, t-SNE, and a parallel coordinates plot of the centroids, followed by a further visualization of the clusters' composition w.r.t. categorical and numeric features.
+    \item Extrinsic evaluation: analysis of cluster centroids and of the clusters' composition w.r.t. categorical and numeric features.
 \end{enumerate}
 
 \subsubsection{K-Means}
@@ -121,7 +122,7 @@ We can identify \textbf{Cluster 1} and \textbf{Cluster 2} as the "higher critica
 
 Again, the three biggest clusters are the purest w.r.t. \textit{numGenres}.
 \textbf{Cluster 4} has a relatively low runtime (median: 30 minutes): it's mostly made up of tvEpisodes and of a smaller, yet significant, proportion of shorts; it also accounts for the majority of videogames.
-\textbf{Cluster 5}, the biggest cluster, only contains newer titles, released since the 1980s. It contains the largest part of the remaining titleTypes. 
+\textbf{Cluster 5}, the biggest cluster, only contains newer titles, released since the 1980s. It contains the largest part of the remaining titleTypes.
 \textbf{Cluster 6} contains the largest number of movies, albeit being only the third-biggest cluster. It exclusively contains titles released from the 1910s until 1999, and accounts for the majority of records released between 1955 and 1987.
 
 %Analyzing the parallel coordinates plot in Fig. \ref{fig:centroids_bkmeans.png}, we can see that similarly to before, there's a cluster, Cluster 2, that is well-separated from the others w.r.t. \textit{numVotes}, \textit{totalImages}, \textit{totalCredits} and \textit{numRegions}. In terms of these values, it is followed by Clusters 0 and 1. Moreover, there's once again a cluster, Cluster 1, with a particularly high value for \textit{criticReviewsRatio}.
@@ -179,8 +180,9 @@ The only notable trend found in the analysis of this clustering is that titles a
 
 \subsection{Hierarchical Clustering}
 In analyzing the dataset using agglomerative hierarchical clustering we initially entertained the idea of using a precomputed distance matrix in order to include categorical attributes.
-However, we ultimately decided against this and used only the numeric features with euclidean distance in order to obtain results that are comparable with those obtained with centroid based methods, be able to use Ward's method for determining inter-cluster distances and escape the curse of dimensionality.
-This also enabled us to check if clusters computed on the basis of numerical features were able to capture information vehicolated by categorical features.
+However, we ultimately decided against this and used only the numeric features with euclidean distance.
+ This allowed us to obtain silhouette scores comparable with those obtained with centroid based methods, be able to use Ward's method for determining inter-cluster distances and escape the curse of dimensionality.
+This also enabled us to check if clusters computed on the basis of numerical features were able to infer information conveyed by categorical features.
 
 We performed clustering using all linkage  criteria made available from the scikit learn library (single linkage, average linkage, complete linkage and Ward's method), visualized the dendrogram (figg. \ref{fig:dendrogram_single_link}-\ref{fig:dendrogram_ward}) for each clustering and selected an appropriate threshold value for further analysis.
 
@@ -230,6 +232,8 @@ We then evaluated the clusterings obtained with complete linkage and Ward's meth
 
 We found out that both Ward and complete linkage were able to create clusters containing mainly shorts: Ward's Cluster 1 captures 76\% of shorts and 85\% of TV shorts of the whole dataset and 80\% of its members are shorts or TV shorts; for complete linkage, Clusters 5 and 6 capture, in between them, 69\% of the total shorts and 87\% of TV shorts and are themselves fairly pure with respect to title type (78\% of members of Cluster 5 and 94\% of members of Cluster 6 are shorts or TV shorts).
 Fig. \ref{fig:hier_clustering} shows notable overlap between the shorts clusters obtained by these two methods.
+We found out that both Ward and complete linkage were able to create some clusters containing mainly shorts: Ward's Cluster 1 captures 76\% of shorts and 85\% of TV shorts of the whole dataset and 80\% of its members are shorts or TV shorts; for complete linkage, Clusters 5 and 6 capture, in between them, 69\% of the total shorts and 87\% of TV shorts and are themselves fairly pure with respect to title type (78\% of members of Cluster 5 and 94\% of members of Cluster 6 are shorts or TV shorts).
+Figure \ref{fig:hier_clustering} shows notable overlap between the shorts clusters obtained by these two methods.
 
 \begin{figure}
     \includegraphics[width=\columnwidth]{../results/images/hier_clust_shorts.png}
@@ -257,3 +261,11 @@ Of the slightly less popular records from Cluster 2, 65\% received awards or nom
 Similar results emerge in the clustering with average linkage, where 83\% of the 305 records of Cluster 1 (which in figure \ref{fig:hier_clustering} is shown to overlap significantly with the previous two clusters) received awards and nominations and 91\% have attached videos on their IMDB page.
 
 It should be mentioned that the aforementioned clusters capture only a small part of all records that received awards or nominations, but this is, nevertheless, an interesting result, since we only used the numerical features for the clustering, so no information about awards or videos was provided to the model.
+
+\subsection{Conclusion}
+Hierarchical clustering with average linkage obtained the best silhouette score amongst all clustering algorithms we used, but created clusters of very unbalanced sizes, therefore the best clustering results were obtained with K-means.
+
+Our data proved unsuitable for analysis with density-based methods, which obtained disappointing results, especially considering their computational cost.
+
+Both centroid-based and hierarchical methods gave us valuable insights into the composition of our dataset, in particular creating some clusters containing mainly shorts and clustering together the most popular titles in the dataset.
+Moreover, the inspection of the dendrograms produced by hierarchical clustering revealed interesting relationships between clusters.

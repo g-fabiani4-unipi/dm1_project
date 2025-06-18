@@ -28,7 +28,7 @@ In this figure we can also see that the predicted values are squeezed towards th
 For \emph{numVotes} we fitted and tested a regressor with the following configuration of parameters:
 
 \begin{itemize}
-    \item distance function Manhattan
+    \item distance function: Manhattan
     \item weights: distance
     \item k: 19
 \end{itemize}
@@ -78,13 +78,13 @@ For each combination of input variables we performed 5-fold cross validation on 
 For the Ridge regressor, we used the leave-one-out cross-validation built in sklearn \texttt{RidgeCV} in order to determine the best value of $\alpha$ (checking for powers of 10 between 10\textsuperscript{-3} and 100), in all cases we found that the best $\alpha$ was 10.
 
 \begin{table}
-    \begin{tabular}{lrrr}
+    \begin{tabular}{lrr}
         \toprule
-        feature combination & OLS & Ridge & $\alpha$\\
+        Feature combination & OLS & Ridge\\
         \midrule
-        top DT & 0.459 & 0.459 &10\\
-        top correlated & 0.518 & 0.519 & 10 \\
-        all & 0.547 & 0.548 &10 \\
+        top DT & 0.459 & 0.459 ($\alpha=10$)\\
+        top correlated & 0.518 & 0.519 ($\alpha=10$)\\
+        all & 0.547 & 0.548 ($\alpha=10$) \\
         \bottomrule
     \end{tabular}
     \caption{Validation R2 scores for all linear regressors.}
