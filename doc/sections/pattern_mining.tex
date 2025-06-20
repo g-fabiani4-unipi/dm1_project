@@ -1,7 +1,7 @@
 \label{pattern_mining}
-In this section, we will detail our experiment using the FP-Growth algorithm to extract frequent itemsets and association rules. The most useful rules were then exploited to classify some relevant \textit{titleTypes}.
+In this section, we will detail our experiment using the \textbf{FP-Growth} algorithm to extract frequent itemsets and association rules. The most useful rules were then exploited to classify some relevant \textit{titleTypes}.
 
-Preprocessing was required to turn the dataset into a list of transactions, with each record representing a transaction containing one item for each value the record takes for each feature. We have two multilabel variables, \textit{genres} and \textit{countryOfOrigin}, and we decided to only keep the four most frequent countries to reduce dimensionality, aggregating the rest into an 'Other' category. Numeric variables were discretized into quartile-based bins, and, to allow interpretability, the name of the variables was appended to their values.
+Preprocessing was required to turn the dataset into a list of transactions, with each record representing a transaction containing one item for each feature value associated with that record. We have two multilabel variables, \textit{genres} and \textit{countryOfOrigin}, and we decided to only keep the four most frequent countries to reduce dimensionality, aggregating the rest into an 'Other' category. Numeric variables were discretized into quartile-based bins, and, to allow interpretability, the name of the variables was appended to their values.
 %\begin{table}[ht]
 %\centering
 %\resizebox{\columnwidth}{!}{%
@@ -108,7 +108,7 @@ The 30 rules with the highest lift all contain a \textit{titleType} either in th
 
 \subsection{Classification: \textit{titleType}}
 Out of the extracted rules, 245 have a \textit{titleType} in the consequent: 144 have short, 89 have tvEpisode, 10 have movie, and two have tvSeries.
-For each of these four \textit{titleType} classes, we implement the rule with the highest support for a task of multiclass classification, for the sake of which the remaining classes are aggregated to 'other'. We favor the rules with the highest support because they are more general and include the most important items in the antecedent; nevertheless, we make sure that their lift is higher than 1. The selected rules are reported in Table \ref{tab:association_rules_titleType}.
+For each of these four \textit{titleType} classes, we implemented the rule with the highest support for a task of multiclass classification, for the sake of which the remaining classes were aggregated to 'Other'. We favored the rules with the highest support because they are more general and include the most important items in the antecedent; nevertheless, we made sure that their lift was higher than 1. The selected rules are reported in Table \ref{tab:association_rules_titleType}.
 
 \begin{table}
     \small  % Shrinks font size for table
@@ -131,7 +131,7 @@ For each of these four \textit{titleType} classes, we implement the rule with th
     \caption{Association rules for \textit{titleType} classification.}
     \label{tab:association_rules_titleType}
 \end{table}
-The performance of our simple rule-based classifier on the test set is reported in Table \ref{tab:class_report_rules}. It achieves an accuracy of 60\% and a macro F1 score of 67.5\%, outperforming our baseline model, a stratified dummy classifier trained on the training set, across all metrics for all classes (accuracy: 0.25, macro F1: 0.20).
+The performance of our simple rule-based classifier on the test set is reported in Table \ref{tab:class_report_rules}. It achieved an accuracy of 60\% and a macro F1 score of 67.5\%, outperforming our baseline model, a stratified dummy classifier trained on the training set, across all metrics for all classes (accuracy: 0.25, macro F1: 0.20).
 \begin{table}
     \centering
     \small
@@ -164,4 +164,4 @@ The information about having episodes was enough to achieve perfect recall for t
     \caption{Confusion Matrix for rule-based classifier (10 True × 5 Predicted).}
     \label{fig:heatmap_classification_rules_tts.png}
 \end{figure}
-In conclusion, the selected association rules leveraged on runtime, the information about serialized format, and the explicit information about shorts: these were exactly the top three most important features for our DT classifier. Using significantly less information than our classifiers, they were able to achieve satisfactory results for these relevant classes.
+In conclusion, the selected association rules leveraged on runtime, the information about serialized format, and the explicit information about shorts: these were exactly the top three most important features for our DT classifier. Using significantly less information than our classifiers, they were able to yield satisfactory results for these relevant classes.
