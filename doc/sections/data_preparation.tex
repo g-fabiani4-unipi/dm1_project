@@ -1,18 +1,18 @@
 The goal of the project is to analyze the IMDb Dataset, which contains data about movies, TV shows, and other forms of visual entertainment, along with their ratings.
-Each record includes key information about the title, as well as insights into critical aspects such as awards and reviews, as well as statistical ratings and other metadata. The dataset is updated as of September 1, 2024.
+Each record includes key information about the title, insights into critical aspects such as awards and reviews, as well as statistical ratings and other metadata. The dataset is updated as of September 1, 2024.
 
 \subsection{Data Semantics and First Global Exploration of the Dataset}
 \label{data_semantics}
-The IMDb Dataset contains 16431 records and 23 attributes, of which 10 are categorical and 13 numeric. They are listed in Tables \ref{tab:original_vars_num} and \ref{tab:original_vars_cat}.
+The IMDb Dataset contains 16431 records and 23 attributes, among which 10 are categorical and 13 numeric. They are listed in Tables \ref{tab:original_vars_num} and \ref{tab:original_vars_cat}.
 Among the \textbf{numerical attributes}, most of them are discrete and ratio-scaled, as they represent counts, with \textit{startYear} and \textit{endYear} being interval values.
-Only \textit{runtimeMinutes} can be classified as a continuous attribute, as it represents a time duration, even though it only assumes integer values in the dataset.
+Only \textit{runtimeMinutes} can be classified as a continuous attribute, as it represents a time duration, although it only takes on integer values in the dataset.
 Among the \textbf{categorical attributes}, \textit{canHaveEpisodes}, \textit{isRatable} and \textit{isAdult} are \textbf{binary}, \textit{rating}, \textit{worstRating} and \textit{bestRating} are \textbf{ordinal}, while the rest are all \textbf{nominal}.
 
-Looking at the records' data types, we can observe some syntactic inaccuracies: \textit{isAdult }should be converted from integer to boolean, whereas \textit{rating} assumes ten categorical values of the form  \textit{'(0, 1]', '(1, 2]', ..., '(9, 10]'}. We can assume they represent the binning of a continuous rating, therefore we map them into an integer space [1,10] to facilitate later analysis. Just by looking at the head of the dataframe, we can also tell that \textit{countryOfOrigin} and \textit{genres} contain collections of categorical values; therefore, we transform them into lists for easier handling. Some discrete numerical attributes (\textit{endYear}, \textit{awardWins}) are stored as float rather than boolean because \texttt{int64} does not support NaN values; however, we do not deem it necessary to convert them.
+Looking at the records' data types, we can observe some syntactic inaccuracies: \textit{isAdult }should be converted from integer to boolean, whereas \textit{rating} assumes ten categorical values of the form  \textit{'(0, 1]', '(1, 2]', ..., '(9, 10]'}. We can assume they represent the binning of a continuous rating, therefore we create the variable \textit{ratingNum} to map them onto an integer space [1,10] to facilitate later analysis. \textit{countryOfOrigin} and \textit{genres} contain collections of categorical values; therefore, we transform them into lists for easier handling. Some discrete numerical attributes (\textit{endYear}, \textit{awardWins}) are stored as float because \texttt{int64} does not support NaN values; however, we do not deem it necessary to convert them.
 
 A first global analysis of the dataframe's summary and descriptive statistics already gives us valuable insight into which variables have missing values\footnote{As the missing values were recorded inconsistently in the dataset, we used the \texttt{read\_csv} function, passing a list of strings to recognize as missing values to the parameter \texttt{na\_values}.}, and into which features are uninformative: \textit{bestRating}, \textit{worstRating}, and \textit{isRatable} can be safely dropped, as they only take one value for all records (10, 1, and 1, respectively). We can also see that \textit{numVotes} and \textit{ratingCount} share very similar, when not identical, statistics, so we drop \textit{ratingCount} and only keep \textit{numVotes}.
 
-\subsection{Distribution of categorical variables and statistics}
+\subsection{Distribution of Categorical Variables and Statistics}
 In an effort to analyze the univariate distribution of categorical variables, we produced barplots for \textit{titleType} (Fig. \ref{fig:barplot_titleType.png}), \textit{countryOfOrigin} (Fig. \ref{fig:barplot_countryOfOrigin.png}), and \textit{genres} (Fig. \ref{fig:barplot_genres.png}). All distributions are imbalanced, being dominated by few very common classes: \textit{movie} and \textit{tvepisode}, the \textit{US}, \textit{drama} and \textit{comedy}, respectively. A barplot for \textit{rating}\footnote{In this data exploration phase, we analyzed this ordinal variable both from a categorical and a numeric point of view, as to maximize insights.}, in Fig. \ref{fig:barplot_rating.png}, shows a left-skewed distribution, with the mode being the [7,8) category.
 \begin{figure}
     \centering
@@ -35,23 +35,23 @@ In an effort to analyze the univariate distribution of categorical variables, we
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.9\columnwidth]{../results/images/barplot_rating.png}
+    \includegraphics[width=\columnwidth]{../results/images/barplot_rating.png}
     \caption{Barplot for \textit{rating}.}
     \label{fig:barplot_rating.png}
 \end{figure}
 
 \begin{figure}
-    \includegraphics[width=0.9\columnwidth]{../results/images/timeline_graph.png}
+    \includegraphics[width=\columnwidth]{../results/images/timeline_graph.png}
     \caption{Time series: number of titles being\newline released and ended by year.}
     \label{fig:timeline_graph.png}
 \end{figure}
 
-By looking at the categories for the different variables, we question the informativeness of \textit{canHaveEpisodes} and \textit{isAdult}. The first assumes positive values only for the title types \textit{tvSeries} and \textit{tvMiniSeries}:  we keep it, as an explicit feature of serialized content. \textit{isAdult} proves to be redundant as its information is conveyed by the \textit{adult} category in \textit{genres}, therefore we drop it.
+By looking at the categories for the different variables, we question the informativeness of \textit{canHaveEpisodes} and \textit{isAdult}. The first takes on positive values only for the title types \textit{tvSeries} and \textit{tvMiniSeries}:  we keep it, as an explicit feature of serialized content. \textit{isAdult} proves to be redundant as its information is conveyed by the \textit{adult} category in \textit{genres}, therefore we drop it.
 
-\subsection{Distribution of numeric variables and statistics; transformation of variables}\label{numeric_vars_analysis}
+\subsection{Distribution of Numeric Variables and Statistics; Transformation of Variables}\label{numeric_vars_analysis}
 Before analyzing numeric variables, we add the following features:
 \begin{itemize}
-    \item \textit{moreCountriesOfOrigin}: the number of countries listed for the record for the variable \textit{countryOfOrigin}. For the training set, the values range from 1 to 10.
+    \item \textit{numCountriesOfOrigin}: the number of countries listed for the record for the variable \textit{countryOfOrigin}. For the training set, the values range from 1 to 10.
     \item \textit{numGenres}: the number of genres listed in \textit{genres}. For the training set, the values range from 1 to 3.
     \item \textit{reviewsTotal}: the sum of \textit{criticReviewsTotal} and \textit{userReviewsTotal}.
     \item \textit{criticReviewsRatio}: the proportion of review from critics (\textit{criticsReviewTotal}) on the total number of reviews of a record (\textit{reviewsTotal}). For unreviewed records, it is set to zero.
@@ -66,16 +66,14 @@ In order to have a first global view of both the univariate distribution of the 
 Our previous intuition about a positive correlation between \textit{startYear} and \textit{endYear} is proved by the scatterplot in Fig. \ref{fig:scatterplot_endYear_startYear.png}, therefore we drop \textit{endYear}, which is more problematic due to the large number of missing values.
 
 \begin{figure}
-    \includegraphics[width=0.9\columnwidth]{../results/images/scatterplot_endYear_startYear.png}
+    \includegraphics[width=\columnwidth]{../results/images/scatterplot_endYear_startYear.png}
     \caption{Scatterplot endYear\textasciitilde startYear.}
     \label{fig:scatterplot_endYear_startYear.png}
 \end{figure}
 
 The outliers visible in this plot highlight supposedly particularly long-running television shows: as a matter of fact, of those we analyzed, only the \emph{MDA Labor Day Telethon} run continuously for 45 years, while the other titles refer to shows that were renewed or re-broadcasted after a long hiatus.
 
-
-
-Most numeric features (\textit{awardWins}, \textit{numVotes}, \textit{totalImages}, \textit{totalVideos}, \textit{totalCredits}, \textit{criticReviewsTotal}, \textit{awardNominationsExcludeWins}, \textit{awardsAndNominations}, \textit{numRegions}, \textit{userReviewsTotal}, \textit{numCountriesOfOrigin}, \textit{reviewsTotal}) have heavily right-skewed distributions. It makes sense that the distribution of these types of features would approximate a power law. We can address this problem using a log transformation of these features.
+Most numeric features (\textit{awardWins}, \textit{numVotes}, \textit{totalImages}, \textit{totalVideos}, \textit{totalCredits}, \textit{criticReviewsTotal}, \textit{awardNominationsExcludeWins}, \textit{awardsAndNominations}, \textit{numRegions}, \textit{userReviewsTotal}, \textit{numCountriesOfOrigin}, \textit{reviewsTotal}) have heavily right-skewed distributions; it makes sense that their distribution would approximate a power law. We can address this problem by using a log transformation of these features.
 
 On the other hand, \textit{runtimeMinutes} also has a right-skewed distribution, but when excluding outliers (values higher than 3rd quartile + 1.5 IQR), we can see that, for the most part, runtimes are dependent on the \textit{titleType} and that the distribution of the runtime for each title type approximates a bell curve (Fig. \ref{fig:kde_runtimeMinutes_doppio.png}); therefore, we prefer not to log transform this variable and be mindful of the presence of outliers. Examining the titles with a longer runtime reveals that part of the outliers is due to the inconsistent strategy used for the computation of the runtime for serialized titles (series and miniseries): in some cases, the episode runtime is provided, in others, it reports the runtime for the entire series, i.e. the sum of all its episodes' runtimes.
 
@@ -115,10 +113,9 @@ In Subsection \ref{numeric_vars_analysis}, we opted to drop \textit{endYear} bec
 
 \textit{awardWins} has almost three thousand missing values. Given its highly unbalanced distribution, with the large majority of the records having no awards, it makes sense to fill them with the most frequent value, i.e. zero.
 
-Analyzing the distribution of genres, we noticed that there is some variation in the frequency of different genres with respect to \textit{titleType}: for example, while \emph{Drama} is overall the most frequent genre (as can be seen in figure \ref{fig:barplot_genres.png}), \emph{Comedy} tends to be more prevalent in serialized content. We decided to fill the 382 missing values for \textit{genres} with the most frequent list of genres given the title type of the record (cf. Table \ref{tab:top_genre_median_runtime}).
+Analyzing the distribution of \textit{genres}, we noticed that there is some variation in the frequency of different genres w.r.t. \textit{titleType}: for example, while \emph{Drama} is overall the most frequent genre (as can be seen in Fig. \ref{fig:barplot_genres.png}), \emph{Comedy} tends to be more prevalent in serialized content. We decided to fill the 382 missing values for \textit{genres} with the most frequent list of genres given the title type of the record (cf. Table \ref{tab:top_genre_median_runtime}).
 
-As previously mentioned in Subsection \ref{numeric_vars_analysis}, \textit{runtimeMinutes} is dependent on the \textit{titleType} of a record (cf. Fig. \ref{fig:kde_runtimeMinutes_doppio.png}): movies are generally longer than TV episodes, and shorts are typically shorter than both. Since we have some missing values for \textit{runtimeMinutes}, we can use the median value for the respective type to fill them (cf. Table \ref{tab:top_genre_median_runtime}).
-
+As previously mentioned in Subsection \ref{numeric_vars_analysis}, \textit{runtimeMinutes} is also dependent on the \textit{titleType} of a record (cf. Fig. \ref{fig:kde_runtimeMinutes_doppio.png}): movies are generally longer than TV episodes, and shorts are typically shorter than both. We can thefore use the median runtime for the respective \textit{titleType} to fill \textit{runtimeMinutes}' missing values (cf. Table \ref{tab:top_genre_median_runtime}).
 
 \begin{table}[h]
     \centering
@@ -145,7 +142,7 @@ As previously mentioned in Subsection \ref{numeric_vars_analysis}, \textit{runti
     \label{tab:top_genre_median_runtime}
 \end{table}
 
-\subsection{Pairwise correlations and eventual elimination of variables}
+\subsection{Pairwise Correlations and Elimination of Variables}
 \label{var_correlation_elimination}
 We observed pairwise linear correlation among numerical variables (after operating the log transformation detailed in Subsection \ref{numeric_vars_analysis}) by computing their correlation heatmap, displaying Pearson’s correlation coefficient for each pair of features (Fig. \ref{fig:double_heatmap.png}, left).
 %(Fig. \ref{fig:heatmap_first.png}).
@@ -158,9 +155,9 @@ We observed pairwise linear correlation among numerical variables (after operati
 %\end{figure*}
 
 
-\textit{numVotes}, \textit{userReviewsTotal}, \textit{criticReviewsTotal} and \textit{reviewsTotal} are all highly positively correlated with each other (with a correlation coefficient greater than 70). We only keep \textit{numVotes}, which has the least skewed distribution.
+\textit{numVotes}, \textit{userReviewsTotal}, \textit{criticReviewsTotal} and \textit{reviewsTotal} are all highly positively correlated with each other (with a correlation coefficient greater than 70): we only keep \textit{numVotes}, which has the least skewed distribution.
 
-The majority of records have no awards nor nominations, no videos, and only one country of origin. Therefore we binarize \textit{awardsAndNominations}, dropping both \textit{awardWins} and \textit{awardNominationsExcludeWins}, and we drop both \textit{totalVideos} and \textit{numCountriesOfOrigin}, substituting them for the boolean features \textit{hasVideos} and \textit{moreCountriesOfOrigin} (Table \ref{tab:binarized_vars}).
+The majority of records lack awards or nominations, do not have videos, and list only one country of origin. On that account, we binarized \textit{awardsAndNominations}, dropping both \textit{awardWins} and \textit{awardNominationsExcludeWins}. Similarly, we also dropped \textit{totalVideos} and \textit{numCountriesOfOrigin}, replacing them with the boolean features \textit{hasVideos} and \textit{moreCountriesOfOrigin}, respectively (cf. Table \ref{tab:binarized_vars}).
 \begin{table}
     \centering
     \small
@@ -168,7 +165,7 @@ The majority of records have no awards nor nominations, no videos, and only one 
     \renewcommand{\arraystretch}{1}
     \begin{tabular}{cccc}
         \toprule
-        \textbf{Value} & \textbf{awAndNoms} & \textbf{hasVids} & \textbf{moreCofOr} \\ \midrule
+        \textbf{Value} & \textbf{awAndNoms} & \textbf{hasVids} & \textbf{moreCounOfOr} \\ \midrule
         \textbf{False} & 13692 & 14821 & 15285 \\
         \textbf{True}  & 2739  & 1610  & 1146  \\
         \bottomrule
@@ -177,7 +174,7 @@ The majority of records have no awards nor nominations, no videos, and only one 
     \label{tab:binarized_vars}
 \end{table}
 
-The overall number of features was reduced from 23 to 18; they are listed in Tables \ref{tab:dataset_numeric} and \ref{tab:dataset_categorical}. Among the remaining numeric features, we observe in the heatmap in Fig. \ref{fig:double_heatmap.png} (right) that \textit{numVotes} positively correlates to \textit{totalImages} (0.61, moderate to high correlation), to \textit{numRegions} (0.56, moderate correlation), and to \textit{totalCredits} (0.51, low-moderate correlation).
+The total number of final features was reduced from 23 to 18; they are listed in Tables \ref{tab:dataset_numeric} and \ref{tab:dataset_categorical}. Among the remaining numeric features, the heatmap in Fig. \ref{fig:double_heatmap.png} (right) shows that \textit{numVotes} exhibits a moderate to high positive correlation with \textit{totalImages} (0.61), a moderate correlation with \textit{numRegions} (0.56), and a low to moderate correlation with \textit{totalCredits} (0.51).
 %we observe in the heatmap in Fig. \ref{fig:heatmap_second.png}
 
 %\begin{figure*}
