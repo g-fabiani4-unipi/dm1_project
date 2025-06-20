@@ -1,7 +1,10 @@
 \label{pattern_mining}
 In this section, we will detail our experiment using the \textbf{FP-Growth} algorithm to extract frequent itemsets and association rules. The most useful rules were then exploited to classify some relevant \textit{titleTypes}.
 
-Preprocessing was required to turn the dataset into a list of transactions, with each record representing a transaction containing one item for each feature value associated with that record. We have two multilabel variables, \textit{genres} and \textit{countryOfOrigin}, and we decided to only keep the four most frequent countries to reduce dimensionality, aggregating the rest into an 'Other' category. Numeric variables were discretized into quartile-based bins, and, to allow interpretability, the name of the variables was appended to their values.
+Preprocessing was required to turn the dataset into a list of transactions, with each record representing a transaction containing one item for each feature value associated with that record.
+For multilabel variables \textit{genres} and \textit{CountryOfOrigin}, we created as many items as the values expressed in each record.
+We augmented transactions representing titles produced in at least one country not in the top four (US, UK, FR, JP) adding the item \texttt{country\_Other} to the transaction, but also kept the specific countries in the transaction, in order to be able to detect possible patterns associated both with titles produced in a specific country and with titles produced in any less represented country.
+Numeric variables were discretized into quartile-based bins, and, to allow interpretability, the name of the variables was appended to their values.
 %\begin{table}[ht]
 %\centering
 %\resizebox{\columnwidth}{!}{%
@@ -164,4 +167,4 @@ The information about having episodes was enough to achieve perfect recall for t
     \caption{Confusion Matrix for rule-based classifier (10 True × 5 Predicted).}
     \label{fig:heatmap_classification_rules_tts.png}
 \end{figure}
-In conclusion, the selected association rules leveraged on runtime, the information about serialized format, and the explicit information about shorts: these were exactly the top three most important features for our DT classifier. Using significantly less information than our classifiers, they were able to yield satisfactory results for these relevant classes.
+In conclusion, the selected association rules leveraged runtime, the information about serialized format, and the explicit information about shorts: these were exactly the top three most important features for our DT classifier. Using significantly less information than our classifiers, they were able to yield satisfactory results for these relevant classes.
