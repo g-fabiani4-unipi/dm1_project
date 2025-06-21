@@ -160,7 +160,7 @@ In conclusion, although Bisecting K-Means produced worse metrics than K-Means, i
 \end{figure}
 
 \subsubsection{DBSCAN}
-In order to choose the hyperparameters $\epsilon$ and \emph{MinPts}, we experimented with plotted the sorted distances from the k\textsuperscript{th} neighbor for several values of k (powers of 2 between 8 and 512) and checked for the presence of an elbow in the plot.
+In order to choose the hyperparameters $\epsilon$ and \emph{MinPts}, we plotted the sorted distances from the k\textsuperscript{th} neighbor for several values of k (powers of 2 between 8 and 512) and checked for the presence of an elbow in the plot.
 We then fixed \emph{MinPts} to a value of k (we choose 16, since all values of k gave use very similar curves) and used the elbow in the plot to choose a suitable value for $\epsilon$.
 
 In Fig. \ref{fig:dbscan} we can see that the elbow of the curve is around 1.5, so we run the clustering algorithm with \emph{MinPts}=16 and $\epsilon$=1.5. DBSCAN classified almost 99\% of our titles as noise points and clustered together all remaining titles.
@@ -175,7 +175,7 @@ Since we failed to detect significative clusters in the data determining $\epsil
 \end{figure}
 
 In Fig. \ref{fig:reachability} we can see that the reachability plot doesn't show any real valleys which would allow us to detect significant clusters.
-It is possible that our data is simply too noisy to be suitable for this type of analysis.
+It is possible that our data is simply too sparse to be suitable for this type of analysis.
 Still, setting $\epsilon$ to 1.2, we were able to extract 3 clusters of similar sizes and remove 1188 noise points. This clustering obtained a Silhouette score of 0.09.
 The only notable trend found in the analysis of this clustering is that titles are clustered by number of genres (1, 2 or 3).
 
@@ -242,7 +242,7 @@ Figure \ref{fig:hier_clustering} shows notable overlap between the shorts cluste
     \label{fig:hier_clustering_shorts}
 \end{figure}
 
-In fig \ref{fig:hier_clustering_shorts} we show the results of clustering with complete linkage by year of release and runtime.
+In fig \ref{fig:hier_clustering_shorts} we show the results of clustering with complete linkage plotted by year of release and runtime.
 Here we can see that Cluster 4 (which is the most numerous), containing mainly movies and TV episodes is cleanly separated from the two shorts clusters by means of runtime.
 We can also see that the two clusters of shorts detected by the algorithm differ for date of release: Cluster 6 contains older shorts, while Cluster 5 contains shorts that were released from the 60s onwards.
 From the dendrogram in Fig. \ref{fig:dendrogram_complete_link}, we can see that, had we selected a higher threshold for splitting the dendrogram, these two clusters would be merged together.
