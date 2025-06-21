@@ -85,10 +85,10 @@ The total number of rules extracted is 16466. The histograms in Fig. \ref{fig:ru
 
 The 30 rules with the highest lift all contain a \textit{titleType} either in the antecedent or consequent; a selection is reported in Table \ref{tab:top_association_rules}. In particular, the two top rules have captured the fact that tvSeries have episodes, while the rest have captured the redundancy of the information about shorts, present in both \textit{genres} and \textit{titleType}. In particular, rules having \textit{short\_titleType} as consequent are all associated with both \textit{genre\_Short} and the lowest value for \textit{runtimeMinutes}, [0, 29].
 
-Searching specifically for rules having as consequent \emph{HasAwardsorNominations}, we found the following: \emph{((90.0, 3000.0]\_RuntimeMin, (4.19, 9.664]\_TotalCredits, (5.007, 13.782]\_NumVotes, movie\_TitleType, genre\_Drama, country\_Other} (\% support: 0.96, confidence: .82, lift: 4.9).
+Searching specifically for rules having as consequent \emph{HasAwardsorNominations}, we found the following: \emph{((90.0, 3000.0]\_RuntimeMin, (4.19, 9.664]\_TotalCredits, (5.007, 13.782]\_NumVotes, movie\_TitleType, genre\_Drama, country\_Other} (\% support: 0.96, confidence: 0.82, lift: 4.9).
 This rule identifies dramatic movies not produced exclusively in the US, UK, Japan or France that are popular and have productions of bigger dimensions.
-Checking against our data we were in fact able to confirm that these characteristics are a less reliable predictor for awards and nominations for titles produced in top countries (66\% vs 82\% for foreign movies).
-This may very well indicate that foreign movies need critical acclaim to become popular, more so than movies produced in top countries.
+Checking against our data, we were in fact able to confirm that these characteristics are a less reliable predictor for awards and nominations for titles produced in top countries (66\% vs 82\% for foreign movies).
+This may indicate that foreign movies need critical acclaim to become popular, more so than movies produced in top countries.
 
 \begin{table}
     \small  % Shrinks font size for table
@@ -143,7 +143,7 @@ For each of these four \textit{titleType} classes, we implemented the rule with 
 Our simple rule-based classifier  achieved an accuracy of 60\% and a macro F1 score of 67.5\% on the test set, outperforming our baseline model, a stratified dummy classifier trained on the training set, across all metrics for all classes (accuracy: 0.25, macro F1: 0.20).
 
 The confusion matrix in Fig. \ref{fig:heatmap_classification_rules_tts.png} allows us to understand what types of mistakes the classifier made and how the 'Other' classes were classified.
-The information about having episodes was enough to achieve perfect recall for tvSeries, but of course all tvMiniSeries were also classified as such. The same happens for tvShorts, all classified as shorts – the same had happened for our other classifiers. The information about \textit{runtimeMinutes} has lead to some misclassification, as the binning is quite coarse-grained; this explains the lower recall for tvEpisodes and, especially, for movies: there's plenty of movies with a runtime < 90 minutes. All of our classification models have yielded better performances for these two classes: the information carried by the other features proved to be useful.
+The information about having episodes was enough to achieve perfect recall for tvSeries (P: 0.85, R: 1), but of course all tvMiniSeries were also classified as such. The same happens for tvShorts, all classified as shorts (P: 0.89, R: 0.91) – the same had happened for our other classifiers. The information about \textit{runtimeMinutes} has lead to some misclassification, as the binning is quite coarse-grained; this explains the lower recall for tvEpisodes (P: 0.95, R: 0.57) and, especially, for movies (P: 0.81, R: 0.53): there's plenty of movies with a runtime < 90 minutes. All of our classification models have yielded better performances for these last two classes: the information carried by the other features proved to be useful.
 
 \begin{figure}
     \centering
