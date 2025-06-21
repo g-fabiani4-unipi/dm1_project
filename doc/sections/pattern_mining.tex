@@ -134,29 +134,8 @@ For each of these four \textit{titleType} classes, we implemented the rule with 
     \caption{Association rules for \textit{titleType} classification.}
     \label{tab:association_rules_titleType}
 \end{table}
-The performance of our simple rule-based classifier on the test set is reported in Table \ref{tab:class_report_rules}. It achieved an accuracy of 60\% and a macro F1 score of 67.5\%, outperforming our baseline model, a stratified dummy classifier trained on the training set, across all metrics for all classes (accuracy: 0.25, macro F1: 0.20).
-\begin{table}
-    \centering
-    \small
-    \setlength{\tabcolsep}{4pt}  % Reduces column padding
-    \renewcommand{\arraystretch}{0.9}
-    \begin{tabular}{lcccc}
-        \hline
-        & \textbf{precision} & \textbf{recall} & \textbf{f1-score} & \textbf{support} \\
-        \hline
-        movie      & 0.808 & 0.397 & 0.532 & 1877 \\
-        other      & 0.210 & 0.607 & 0.312 & 789  \\
-        short      & 0.890 & 0.911 & 0.901 & 766  \\
-        tvEpisode  & 0.952 & 0.573 & 0.715 & 1599 \\
-        tvSeries   & 0.847 & 1.000 & 0.917 & 447  \\
-        \hline
-        accuracy   &  &  & \textbf{0.600} & 5478 \\
-        macro avg  & 0.741 & 0.698 & 0.\textbf{675} & 5478 \\
-        \hline
-    \end{tabular}
-    \caption{Classification report for rule-based classification.}
-    \label{tab:class_report_rules}
-\end{table}
+
+Our simple rule-based classifier  achieved an accuracy of 60\% and a macro F1 score of 67.5\% on the test set, outperforming our baseline model, a stratified dummy classifier trained on the training set, across all metrics for all classes (accuracy: 0.25, macro F1: 0.20).
 
 The confusion matrix in Fig. \ref{fig:heatmap_classification_rules_tts.png} allows us to understand what types of mistakes the classifier made and how the 'Other' classes were classified.
 The information about having episodes was enough to achieve perfect recall for tvSeries, but of course all tvMiniSeries were also classified as such. The same happens for tvShorts, all classified as shorts – the same had happened for our other classifiers. The information about \textit{runtimeMinutes} has lead to some misclassification, as the binning is quite coarse-grained; this explains the lower recall for tvEpisodes and, especially, for movies: there's plenty of movies with a runtime < 90 minutes. All of our classification models have yielded better performances for these two classes: the information carried by the other features proved to be useful.
