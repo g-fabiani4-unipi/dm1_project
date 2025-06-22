@@ -14,16 +14,6 @@ This model obtained a \textbf{R2 score} of \textbf{-0.2} and a \textbf{MSE} of \
 As can be seen in Fig. \ref{fig:knn_regression_rating}, there is no correlation between real average rating values and those predicted by the KNN regressor.
 In this figure we can also see that the predicted values are squeezed towards the mean rating of the entire dataset due to the strategy used by the regressor for the prediction (mean score among the 5 nearest neighbors).
 
-\begin{figure}
-    \includegraphics[width=\columnwidth]{../results/images/knn_regression_rating.png}
-    \caption{Relationship between real and predicted values of average rating (KNN regressor).}
-    \label{fig:knn_regression_rating}
-\end{figure}
-
-\begin{figure}
-    \includegraphics[width=\columnwidth]{../results/images/knn_regression_votes.png}
-    \label{fig:knn_regression_votes.png}
-\end{figure}
 
 For \emph{numVotes} we fitted and tested a regressor with the following configuration of parameters:
 
@@ -36,6 +26,17 @@ For \emph{numVotes} we fitted and tested a regressor with the following configur
 The performance on this task was much better: the model obtained a \textbf{R2 score} of \textbf{0.69} and a \textbf{MSE} of \textbf{0.96}.
 This was an expected result, as we saw in Section \ref{var_correlation_elimination} a number of features has moderate to high positive correlation with our target feature.
 As can be seen from Fig. \ref{fig:knn_regression_rating}, real and predicted values are highly and positively correlated (Pearson R: .83).
+
+\begin{figure}
+    \includegraphics[width=\columnwidth]{../results/images/knn_regression_rating.png}
+    \caption{Relationship between real and predicted values of average rating (KNN regressor).}
+    \label{fig:knn_regression_rating}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width=\columnwidth]{../results/images/knn_regression_votes.png}
+    \label{fig:knn_regression_votes.png}
+\end{figure}
 
 \subsection{Decision Tree Regressor}
 We trained the DT regressor on all (categorical and numerical) features with the same preprocessing described for classification.
@@ -99,7 +100,8 @@ We then tested the best model, obtaining a \textbf{R2 score} of \textbf{0.55} an
 We were not able to fit any regressor that could predict the average rating of a title adequately.
 
 On the other hand, when using \emph{numVotes} as target variable we were able to obtain good results.
-As evidenced by the reported scores, non-linear models performed much better than linear ones.
+As evidenced by the reported scores, non-linear models performed much better than linear ones because they were able to model non linear relationships between the input variables and the target.
 
 KNN performed slightly better than DT.
-Considering that this slight improvement comes at the cost of less interpretable results and greater computational cost at prediction time, DT is still the better model.
+Considering that this slight improvement comes at the cost of less interpretable results and greater computational cost at prediction time, it could be argued that DT is still the better model.
+On the other hand DT also uses more features and KNN can be adapted to new data without retraining the model, so the preference for one model over the other may very well depend on the specific application.

@@ -75,7 +75,9 @@ The outliers visible in this plot highlight supposedly particularly long-running
 
 Most numeric features (\textit{awardWins}, \textit{numVotes}, \textit{totalImages}, \textit{totalVideos}, \textit{totalCredits}, \textit{criticReviewsTotal}, \textit{awardNominationsExcludeWins}, \textit{awardsAndNominations}, \textit{numRegions}, \textit{userReviewsTotal}, \textit{numCountriesOfOrigin}, \textit{reviewsTotal}) have heavily right-skewed distributions; it makes sense that their distribution would approximate a power law. We can address this problem by using a log transformation of these features.
 
-On the other hand, \textit{runtimeMinutes} also has a right-skewed distribution, but when excluding outliers (values higher than 3rd quartile + 1.5 IQR), we can see that, for the most part, runtimes are dependent on the \textit{titleType} and that the distribution of the runtime for each title type approximates a bell curve (Fig. \ref{fig:kde_runtimeMinutes_doppio.png}); therefore, we prefer not to log transform this variable and be mindful of the presence of outliers. Examining the titles with a longer runtime reveals that part of the outliers is due to the inconsistent strategy used for the computation of the runtime for serialized titles (series and miniseries): in some cases, the episode runtime is provided, in others, it reports the runtime for the entire series, i.e. the sum of all its episodes' runtimes.
+On the other hand, \textit{runtimeMinutes} also has a right-skewed distribution, but when excluding outliers (values higher than 3rd quartile + 1.5 IQR), we can see that, for the most part, runtimes are dependent on the \textit{titleType} and that the distribution of the runtime for each title type approximates a bell curve (Fig. \ref{fig:kde_runtimeMinutes_doppio.png}).
+Examining the titles with a longer runtime reveals that part of the outliers is due to the inconsistent strategy used for the computation of the runtime for serialized titles (series and miniseries): in some cases, the episode runtime is provided, in others, it reports the runtime for the entire series.
+In general, rather than removing runtime outliers, we used a logarithmic transformation of this variable, keeping the original for inspection and visualization.
 
 \begin{figure}
     \centering
@@ -281,7 +283,7 @@ The total number of final features was reduced from 23 to 18; they are listed in
     awardsAndNominations & Whether the title was at least nominated for an award. & Asymmetric binary. \\
     canHaveEpisodes & Whether the title can have episodes. & Asymmetric binary. \\
     hasVideos & Whether the title IMDb title page has at least one video. & Asymmetric binary. \\
-    moreCountriesOfOrigin & Whether the title was produced in more than one country. & Binary.\\ \bottomrule
+    moreCountriesOfOrigin & Whether the title was produced in more than one country. & Asymmetric binary.\\ \bottomrule
     \end{tabular}
     \caption{Categorical, ordinal, and binary attributes after data preparation.}
     \label{tab:dataset_categorical}

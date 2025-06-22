@@ -15,7 +15,7 @@ Since we wanted to avoid having a great number of classes with very low support,
 For this second task we expected overall worse results, because none of our features showed high correlation with rating, and we also saw that our records didn't cluster by rating in any significant way.
 
 In evaluating our models, we considered not only the accuracy score, but also the macro average of F1 scores obtained for each class.
-Since the classes for the first have variable support, we reasoned that this second metric would be a better indicator of the overall performance of the models.
+Since the classes for the first task have variable support, we reasoned that this second metric would be a better indicator of the overall performance of the models.
 
 In order to check that the performance of our models was better than random, we created a baseline using a dummy classifier with strategy stratified (which for each test sample predicted a random class with probability equal to the class prior probability).
 The dummy obtained accuracy .233 and macro F1 .102 on the first task and accuracy .26 and macro F1 .25 on the second task.
@@ -119,7 +119,7 @@ We fitted and tested the classifier with the following configuration of paramete
     \item k: 20 (as can be seen in Fig. \ref{fig:knn_grid_mini} \emph{k}=14 obtained the highest mean accuracy score, but we preferred 20 because of the lower standard deviation).
 \end{itemize}
 
-This model obtained an \textbf{accuracy} of \textbf{0.78} and a \textbf{macro F1 score} of \textbf{0.42} on the test set, well exceeding the performance of the dummy classifier.
+This model obtained an \textbf{accuracy} of \textbf{0.78} a \textbf{macro F1 score} of \textbf{0.42} and \textbf{PR AUC 0.5} on the test set, well exceeding the performance of the dummy classifier.
 
 In particular, as can be seen from the confusion matrix in figure \ref{fig:knn_conf_mat_tt}, the model has little trouble identifying the three classes with higher support (movies, shorts and TV episodes have all F1 scores higher than 0.84) and is able to correctly detect tvSeries around half of the time.
 We can also see that TV movies, miniseries and videos are most frequently misclassified as movies, while TV shorts are almost always classified as shorts.
@@ -133,7 +133,7 @@ We fitted and tested the classifier with the following configuration of paramete
     \item k: 95
 \end{itemize}
 
-This model obtained an \textbf{accuracy} of \textbf{0.44} and a \textbf{macro F1 score} of \textbf{0.39}, exceeding the performance of the baseline in both metrics.
+This model obtained an \textbf{accuracy} of \textbf{0.44}, a \textbf{macro F1 score} of \textbf{0.39} and \textbf{PR AUC 0.44}, exceeding the performance of the baseline in all metrics.
 Overall the performance on this target variable was less satisfactory, as expected.
 
 The inspection of the confusion matrix revealed confusion among all classes (not only adjacent classes), with only \emph{low} and \emph{medium high} obtaining a F1 score greater than .50. The worst performing class was \emph{high}, with an especially bad recall (0.14): more than half of the time titles with a high score were misclassified as \emph{medium high}, with the rest of the cases distributed seemingly at random in the remaining classes.
@@ -229,7 +229,7 @@ The difference in the two NB models' scoring and ranking capability is better vi
 
 \subsection{Decision Tree Classifier}
 \label{dt}
-For each task, we trained one model using all features except the target variable, preprocessed as detailed in Subsec. \ref{naive_bayes}. Decision Trees (DTs) do not require feature scaling, but they are prone to overfitting, therefore we applied pre-pruning and post-pruning techniques. For each model, we used a random search to find the best combination of hyperparameters (i.e. the one yielding the best accuracy) from the following grid:
+For each task, we trained one model using all features except the target variable; categorical variables were preprocessed as detailed in Subsec. \ref{naive_bayes}. Decision Trees (DTs) do not require feature scaling, but they are prone to overfitting, therefore we applied pre-pruning and post-pruning techniques. For each model, we used a random search to find the best combination of hyperparameters (i.e. the one yielding the best accuracy) from the following grid:
 
 \begin{lstlisting}[basicstyle=\footnotesize\ttfamily]
   {'max_depth': [None] + list(np.arange(2, 20)),
@@ -238,7 +238,7 @@ For each task, we trained one model using all features except the target variabl
   'criterion': ['gini', 'entropy']}
 \end{lstlisting}
 The random search was performed with 5-fold stratified cross-validation, repeated 5 times. Keeping the best hyperparameters found fixed, we then searched for the value of the \textit{ccp\_alpha} parameter that maximized the average macro F1 score of the validation sets in a 5-fold stratified cross-validation. Since we'd already implemented pre-pruning, we favored the macro F1 score rather than the accuracy because it lead to a more conservative post-pruning. The resulting hyperparameter configurations are reported in Table \ref{tab:hyperparams_dts}.
-\begin{table}[h]
+\begin{table}
     \centering
     \small
     \setlength{\tabcolsep}{3pt}
@@ -282,7 +282,7 @@ The DT outperformed all previous models, both in terms of accuracy and macro F1,
 \end{figure}
 Unsurprisingly, the most important features are \textit{logRuntime} (0.45), \textit{canHaveEpisodes} (0.18) and the genre \textit{Short} (0.17).
 The first split on \textit{logRuntime} $\leq$ 4.119 ($\approx$ 60.5 minutes) already allows to separate all shorts, tvShort, and videogames in the left subtree.
-In two more splits, we get to a node in the right subtree which will lead to a leaf: it's adult videos that are longer than an hour and released since 1991. On the left subtree, we get to a leaf containing \textit{tvSeries} in three total splits: they are at most an hour long, have \textit{Short} as a genre, and can have episodes. It's also worth noting that all (except one) videogames are at most an hour long and are not tagged as genre \textit{Short}.
+In two more splits, we get to a node in the right subtree which will lead to a leaf: it's adult videos that are longer than one hour and released since 1991. On the left subtree, we get to a leaf containing \textit{tvSeries} in three total splits: they are at most an hour long, have \textit{Short} as a genre, and can have episodes. It's also worth noting that all (except one) videogames are at most an hour long and are not tagged as genre \textit{Short}.
 \begin{figure*}
     \centering
     \includegraphics[width=\textwidth]{../results/images/dt_all_feats_tts.png}
@@ -303,4 +303,4 @@ Looking at the first two levels of the DT (Fig. \ref{fig:dt_all_feats_rating.png
 \end{figure*}
 
 \subsection{Conclusions}
-As anticipated, the task of predicting \textit{titleType} yielded better results across all models, thanks to clearer class separability and stronger feature associations. Nevertheless, some classes had too limited of a support to allow for generalization (e.g. tvShort: all models scored 0\% precision and recall). The Decision Tree Classifier achieved the best results, especially in terms of macro F1. It is followed by the CNB, with KNN trailing by a small margin. The differences in performance among the three models were less accentuated for the \textit{binned rating} task, while the GNB resulted in consistently lower performances. 
+As anticipated, the task of predicting \textit{titleType} yielded better results across all models, thanks to clearer class separability and stronger feature associations. Nevertheless, some classes had too limited of a support to allow for generalization (e.g. tvShort: all models scored 0\% precision and recall). The Decision Tree Classifier achieved the best results, especially in terms of macro F1. It is followed by the CNB, with KNN trailing by a small margin. The differences in performance among the three models were less accentuated for the \textit{binned rating} task, while the GNB resulted in consistently lower performances.

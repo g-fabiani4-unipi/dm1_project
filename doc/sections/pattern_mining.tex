@@ -1,7 +1,10 @@
 \label{pattern_mining}
 In this section, we will detail our experiment using the \textbf{FP-Growth} algorithm to extract frequent itemsets and association rules. The most useful rules were then exploited to classify some relevant \textit{titleTypes}.
 
-Preprocessing was required to turn the dataset into a list of transactions, with each record representing a transaction containing one item for each feature value associated with that record. We have two multilabel variables, \textit{genres} and \textit{countryOfOrigin}, and we decided to only keep the four most frequent countries to reduce dimensionality, aggregating the rest into an 'Other' category. Numeric variables were discretized into quartile-based bins, and, to allow interpretability, the name of the variables was appended to their values.
+Preprocessing was required to turn the dataset into a list of transactions, with each record representing a transaction containing one item for each feature value associated with that record.
+For multilabel variables \textit{genres} and \textit{CountryOfOrigin}, we created as many items as the values expressed in each record.
+We augmented transactions representing titles produced in at least one country not in the top four (US, UK, FR, JP) adding the item \texttt{country\_Other} to the transaction, but also kept the specific countries in the transaction, in order to be able to detect possible patterns associated both with titles produced in a specific country and with titles produced in any less represented country.
+Numeric variables were discretized into quartile-based bins, and, to allow interpretability, the name of the variables was appended to their values.
 %\begin{table}[ht]
 %\centering
 %\resizebox{\columnwidth}{!}{%
@@ -46,18 +49,16 @@ The first one captures a dependency we expect: a movie doesn't have episodes. Th
 %\setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{0.9}
 \centering
-\begin{tabular}{|>{\centering\arraybackslash}p{0.7cm}|>{\raggedleft\arraybackslash}p{4.1cm}|c|}
-\hline
+\rowcolors{2}{}{gray!25}
+\begin{tabular}{>{\centering\arraybackslash}p{0.7cm}>{\raggedleft\arraybackslash}p{4.1cm}c}
+\toprule
 \textbf{Rank} & \textbf{Maximal Itemset} & \textbf{Sup} \\
-\hline
+\midrule
 1 & (movie\_TitleType, NoEpisodes) & 33.686 \\
-\hline
 4 & (country\_Other, NoVideos, OneCountryofOrigin) & 32.481 \\
-\hline
 6 & (genre\_Drama, NoEpisodes, OneCountryofOrigin) & 31.514 \\
-\hline
 7 & ((50.0, 90.0]\_RuntimeMin, NoEpisodes) & 31.471 \\
-\hline
+\bottomrule
 \end{tabular}
 \caption{Selected top maximal itemsets for \textit{minsup}=30.}
 \label{tab:maximal_itemsets}
@@ -82,25 +83,27 @@ The total number of rules extracted is 16466. The histograms in Fig. \ref{fig:ru
 
 The 30 rules with the highest lift all contain a \textit{titleType} either in the antecedent or consequent; a selection is reported in Table \ref{tab:top_association_rules}. In particular, the two top rules have captured the fact that tvSeries have episodes, while the rest have captured the redundancy of the information about shorts, present in both \textit{genres} and \textit{titleType}. In particular, rules having \textit{short\_titleType} as consequent are all associated with both \textit{genre\_Short} and the lowest value for \textit{runtimeMinutes}, [0, 29].
 
+Searching specifically for rules having as consequent \emph{HasAwardsorNominations}, we found the following: \emph{((90.0, 3000.0]\_RuntimeMin, (4.19, 9.664]\_TotalCredits, (5.007, 13.782]\_NumVotes, movie\_TitleType, genre\_Drama, country\_Other} (\% support: 0.96, confidence: 0.82, lift: 4.9).
+This rule identifies dramatic movies not produced exclusively in the US, UK, Japan or France that are popular and have productions of bigger dimensions.
+Checking against our data, we were in fact able to confirm that these characteristics are a less reliable predictor for awards and nominations for titles produced in top countries (66\% vs 82\% for foreign movies).
+This may indicate that foreign movies need critical acclaim to become popular, more so than movies produced in top countries.
+
 \begin{table}
     \small  % Shrinks font size for table
     \setlength{\tabcolsep}{3pt}  % Reduces column padding
     %\renewcommand{\arraystretch}{0}  % Reduces row height
     \centering
-    \begin{tabular}{|p{3cm}|p{1.4cm}|c|c|c|}
-    \hline
+    \rowcolors{2}{}{gray!25}
+    \begin{tabular}{p{3cm}p{1.4cm}ccc}
+    \toprule
     \textbf{Antecedent} & \textbf{Conseq.} & \textbf{\%sup} & \textbf{conf} & \textbf{lift} \\
-    \hline
+    \midrule
     (HasEpisodes,\newline OneCountryofOrigin) & tvSeries\newline \_TitleType & 7.89 & 0.866 & 10.35 \\
-    \hline
     (HasEpisodes) & tvSeries\newline \_TitleType & 8.37 & 0.860 & 10.28 \\
-    \hline
     (short\_TitleType,\newline {[}0, 0.693{]}\_Total-\newline Images, NoEpisodes) & genre\newline\_Short & 8.48 & 0.931 & 6.21 \\
-    \hline
     (genre\_Short,\newline {[}0, 29{]}\_RuntimeMin, \newline(0.692, 1.386]\_Num-\newline Regions, NoEpisodes,\newline OneCountryofOrigin) & short\newline \_TitleType & 11.33 & 0.933 & 6.20 \\
-    \hline
     (short\_TitleType,\newline {[}0, 2.833{]}\_TotalCredits, NoEpisodes) & genre\newline\_Short & 8.58 & 0.928 & 6.19 \\
-    \hline
+    \bottomrule
     \end{tabular}
     \caption{Selected top association rules by lift.}
     \label{tab:top_association_rules}
@@ -115,48 +118,25 @@ For each of these four \textit{titleType} classes, we implemented the rule with 
     \setlength{\tabcolsep}{4pt}  % Reduces column padding
     \renewcommand{\arraystretch}{1}  % Reduces row height
     \centering
-    \begin{tabular}{|p{2.4cm}|p{1.4cm}|c|c|c|}
-    \hline
+    \rowcolors{2}{}{gray!25}
+    \begin{tabular}{p{2.4cm}p{1.4cm}ccc}
+    \toprule
     \textbf{Antecedent} & \textbf{Conseq.} & \textbf{\%sup} & \textbf{conf} & \textbf{lift} \\
-    \hline
+    \midrule
     (genre\_Short, NoEpisodes) & short\newline \_TitleType & 13.42 & 0.900 & 5.980 \\
-    \hline
     ((29.0, 50.0]\_\newline RuntimeMin, NoEpisodes) & tvEpisode\newline \_TitleType & 16.57 & 0.873 & 3.054 \\
-    \hline
     ((90.0, 3000.0]\_\newline RuntimeMin, NoEpisodes)	 & movie\newline \_TitleType & 12.85 & 0.824 & 2.446 \\
-    \hline
     (HasEpisodes) & tvSeries\newline \_TitleType & 8.37 & 0.860 & 10.276 \\
-    \hline
+    \bottomrule
     \end{tabular}
     \caption{Association rules for \textit{titleType} classification.}
     \label{tab:association_rules_titleType}
 \end{table}
-The performance of our simple rule-based classifier on the test set is reported in Table \ref{tab:class_report_rules}. It achieved an accuracy of 60\% and a macro F1 score of 67.5\%, outperforming our baseline model, a stratified dummy classifier trained on the training set, across all metrics for all classes (accuracy: 0.25, macro F1: 0.20).
-\begin{table}
-    \centering
-    \small
-    \setlength{\tabcolsep}{4pt}  % Reduces column padding
-    \renewcommand{\arraystretch}{0.9}
-    \begin{tabular}{lcccc}
-        \hline
-        & \textbf{precision} & \textbf{recall} & \textbf{f1-score} & \textbf{support} \\
-        \hline
-        movie      & 0.808 & 0.397 & 0.532 & 1877 \\
-        other      & 0.210 & 0.607 & 0.312 & 789  \\
-        short      & 0.890 & 0.911 & 0.901 & 766  \\
-        tvEpisode  & 0.952 & 0.573 & 0.715 & 1599 \\
-        tvSeries   & 0.847 & 1.000 & 0.917 & 447  \\
-        \hline
-        accuracy   &  &  & \textbf{0.600} & 5478 \\
-        macro avg  & 0.741 & 0.698 & 0.\textbf{675} & 5478 \\
-        \hline
-    \end{tabular}
-    \caption{Classification report for rule-based classification.}
-    \label{tab:class_report_rules}
-\end{table}
+
+Our simple rule-based classifier  achieved an accuracy of 60\% and a macro F1 score of 67.5\% on the test set, outperforming our baseline model, a stratified dummy classifier trained on the training set, across all metrics for all classes (accuracy: 0.25, macro F1: 0.20).
 
 The confusion matrix in Fig. \ref{fig:heatmap_classification_rules_tts.png} allows us to understand what types of mistakes the classifier made and how the 'Other' classes were classified.
-The information about having episodes was enough to achieve perfect recall for tvSeries, but of course all tvMiniSeries were also classified as such. The same happens for tvShorts, all classified as shorts – the same had happened for our other classifiers. The information about \textit{runtimeMinutes} has lead to some misclassification, as the binning is quite coarse-grained; this explains the lower recall for tvEpisodes and, especially, for movies: there's plenty of movies with a runtime < 90 minutes. All of our classification models have yielded better performances for these two classes: the information carried by the other features proved to be useful.
+The information about having episodes was enough to achieve perfect recall for tvSeries (P: 0.85, R: 1), but of course all tvMiniSeries were also classified as such. The same happens for tvShorts, all classified as shorts (P: 0.89, R: 0.91) --- the same had happened for our other classifiers. The information about \textit{runtimeMinutes} has lead to some misclassification, as the binning is quite coarse-grained; this explains the lower recall for tvEpisodes (P: 0.95, R: 0.57) and, especially, for movies (P: 0.81, R: 0.53): there's plenty of movies with a runtime < 90 minutes. All of our classification models have yielded better performances for these last two classes: the information carried by the other features proved to be useful.
 
 \begin{figure}
     \centering
@@ -164,4 +144,4 @@ The information about having episodes was enough to achieve perfect recall for t
     \caption{Confusion Matrix for rule-based classifier (10 True × 5 Predicted).}
     \label{fig:heatmap_classification_rules_tts.png}
 \end{figure}
-In conclusion, the selected association rules leveraged on runtime, the information about serialized format, and the explicit information about shorts: these were exactly the top three most important features for our DT classifier. Using significantly less information than our classifiers, they were able to yield satisfactory results for these relevant classes.
+In conclusion, the selected association rules leveraged runtime, the information about serialized format, and the explicit information about shorts: these were exactly the top three most important features for our DT classifier. Using significantly less information than our classifiers, they were able to yield satisfactory results for these relevant classes.
